@@ -44,10 +44,22 @@ bool DIZ_SOURCE::setBuffer(ALint buf) {
 
 //This function sets all our properties for our OpenAL source
 bool DIZ_SOURCE::update() {
-	//Check if we need to fade our volume at all
-	if (info.gain != fadeDest) {
-		//If we do, add on our fading rate
+	//Check if we need to fade our volume down
+	if (fadeRate < 0 && info.gain > fadeDest) {
+		//If we do, go ahead and update it
 		info.gain += fadeRate;
+		//And make sure it hasn't gone past the end value
+		if (info.gain < fadeDest) {
+			info.gain = fadeDest;
+		}
+	//Then check if we need to fade our volume up
+	}else if (fadeRate > 0 && info.gain < fadeDest) {
+		//If we do, go ahead and update it
+		info.gain += fadeRate;
+		//Then make sure we haven't gone past our desired value
+		if (info.gain > fadeDest) {
+			info.gain = fadeDest;
+		}
 	}
 
 	//Set our Position
@@ -106,7 +118,7 @@ bool DIZ_SOURCE::pause() {
 //This function will fade from a certain volume to another
 void DIZ_SOURCE::fade(float start, float end, int loops) {
 	//Declare a variable to hold the difference between our two volumes
-	float difference = start - end;
+	float difference = end - start;
 
 	//Set our desired volume to our end volume
 	fadeDest = end;
