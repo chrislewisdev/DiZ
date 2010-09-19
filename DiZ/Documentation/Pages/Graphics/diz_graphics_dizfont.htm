@@ -1,0 +1,95 @@
+<HTML>
+
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 8.0">
+<TITLE>DiZ Documentation: DiZ Graphics- DIZ_FONT</TITLE>
+<link rel="Stylesheet" type="text/css" href="../../Resources/layout.css" />
+</HEAD>
+
+<BODY>
+<h1>DiZ Documentation: DIZ_FONT</h1>
+<a href="../../index.htm">Index</a> -> <a href="../diz_graphics_index.htm">DiZ Graphics</a><br /><br />
+
+<ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#declarations">Declaration</a></li>
+    <li><a href="#example">Example</a></li>
+</ul>
+<hr />
+
+<h2><a id="overview">Overview</a></h2>
+
+The <code>DIZ_FONT</code> class covers the settings and creation processes of OpenGL fonts.
+
+<h2><a id="declarations">Declaration</a></h2>
+
+<pre class="code">
+//This class handles all the properties and functions involved in font usage
+class DIZ_FONT {
+public:
+	//Declare our Constructor and Deconstructor
+	DIZ_FONT();
+	~DIZ_FONT();
+
+	//Declare all our public functions
+	//This function loads up the font
+	bool load();
+	//This function kills the font (obviously)
+	void kill();
+
+	//Declare all our properties for the class
+	//Declare a FONTINFO structure to hold all the properties for the font
+	DIZ_FONTINFO info;
+	//Declare our base value for our display list of characters
+	GLuint base;
+	//Declare a GMF array for use if we want an Outline font
+	GLYPHMETRICSFLOAT gmf[256];
+	//Declare a pointer to a Device Context to use
+	HDC *hDC;
+};
+</pre>
+
+<h4>bool load()</h4>
+This function will load the font. All settings should be set according to the user's needs before calling this.
+
+<h4>void kill()</h4>
+This function will delete the font. Should be called on program cleanup.
+
+<h4>DIZ_FONTINFO info</h4>
+Contains all the font's settings. See <code><a href="diz_graphics_fontinfo.htm">DIZ_FONTINFO</a></code>.
+
+<h4>GLuint base</h4>
+Refers to the font's base character in its display list. Primarily used internally by the 
+<code><a href="diz_graphics_dizprint.htm">dizPrint</a></code> function.
+
+<h4>GLYPHMETRICSFLOAT gmf[256]</h4>
+This array, used in Outline fonts, contains the font's characters. Primarily used internally by the class.
+
+<h4>HDC *hDC</h4>
+This pointer must be set to point to the current Device Context, e.g. a <code>DIZ_WINDOW</code>'s <code>hDC</code>. This is
+important and is required for the <code><a href="diz_graphics_dizprint.htm">dizPrint</a></code> function.
+
+<h2><a id="example">Example</a></h2>
+The following code demonstrates common use of the <code>DIZ_FONT</code> class.
+
+<pre class="code">
+    //Set up our font settings- only non-default values are set
+    font.info.type = DIZ_FONT_OUTLINE;
+	font.info.outlineType = WGL_FONT_POLYGONS;
+	font.info.deviation = 1.0f;
+	font.info.thickness = 0.1f;
+	font.info.font = "Calibri";
+	font.info.height = -12;
+	font.hDC = &window.hDC;
+
+    //Then load the font
+	font.load();
+
+    //[...]
+
+    //And then upon exit, kill the font
+    font.kill();
+</pre>
+</BODY>
+
+</HTML>

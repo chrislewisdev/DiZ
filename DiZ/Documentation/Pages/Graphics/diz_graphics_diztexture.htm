@@ -1,0 +1,74 @@
+<HTML>
+
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 8.0">
+<TITLE>DiZ Documentation: DiZ Graphics- DIZ_TEXTURE</TITLE>
+<link rel="Stylesheet" type="text/css" href="../../Resources/layout.css" />
+</HEAD>
+
+<BODY>
+<h1>DiZ Documentation: DIZ_TEXTURE</h1>
+<a href="../../index.htm">Index</a> -> <a href="../diz_graphics_index.htm">DiZ Graphics</a><br /><br />
+
+<ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#declarations">Declaration</a></li>
+    <li><a href="#example">Example</a></li>
+</ul>
+<hr />
+
+<h2><a id="overview">Overview</a></h2>
+
+<code>DIZ_TEXTURE</code> covers the loading and setup of OpenGL Textures.
+
+<h2><a id="declarations">Declaration</a></h2>
+
+<pre class="code">
+//This class is used to handle loading and properties of textures
+class DIZ_TEXTURE {
+public:
+	//Declare the constructor and destructor
+	DIZ_TEXTURE();
+	~DIZ_TEXTURE();
+
+	//Our functions- just the function to load the texture for now
+	bool load();
+
+	//Our texture properties- first just our texture handle
+	GLuint tex;
+	//The filename that we use when loading
+	char *filename;
+	//Filters- these specify the various filters to use for our texture, such as LINEAR or whatever else
+	GLint minFilter, magFilter;
+	//Mipmap indicates we want a mipmap texture, status indicates success of loading
+	bool status, mipmap;
+};
+</pre>
+
+<h4>bool load()</h4>
+This loads the texture. Should only be called once all the texture's settings have been set.
+
+<h4>GLuint tex</h4>
+Once loaded, this will be the texture's handle. Therefore when referencing the texture you must use this.
+
+<h4>char *filename</h4>
+This is the filename of the image you want to load. Currently, textures must be <code>.bmp</code> files.
+
+<h4>GLint minFilter</h4>
+This is the value that will be used for <code>GL_TEXTURE_MIN_FILTER</code>. Defaults to <code>GL_LINEAR</code> but other possible
+values include <code>GL_NEAREST</code>.
+
+<h4>GLint magFilter</h4>
+This is the value that will be used for <code>GL_TEXTURE_MAG_FILER</code>. Same defaults and possible values as <code>minFilter</code>.
+
+<h4>bool status</h4>
+Once loaded, a <code>status</code> value of <code>true</code> indicates the texture has been successfully loaded. <code>False</code> will
+indicate that an error occurred. This value starts off as <code>false</code>.
+
+<h4>bool mipmap</h4>
+This indicates whether or not we want to create a Mipmap texture.
+
+<h2><a id="example">Example</a></h2>
+</BODY>
+
+</HTML>

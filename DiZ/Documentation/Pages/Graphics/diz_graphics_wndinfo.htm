@@ -1,0 +1,114 @@
+<HTML>
+
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 8.0">
+<TITLE>DiZ Documentation: DiZ Graphics- DIZ_WNDINFO</TITLE>
+<link rel="Stylesheet" type="text/css" href="../../Resources/layout.css" />
+</HEAD>
+
+<BODY>
+<h1>DiZ Documentation: DIZ_WNDINFO</h1>
+<a href="../../index.htm">Index</a> -> <a href="../diz_graphics_index.htm">DiZ Graphics</a><br /><br />
+
+<ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#declarations">Declaration</a></li>
+    <li><a href="#example">Example</a></li>
+</ul>
+<hr />
+
+<h2><a id="overview">Overview</a></h2>
+<code>DIZ_WNDINFO</code> is a structure used by <code>DIZ_WINDOW</code> to hold all necessary information for the creation of a window. Instances of this structure
+need not be created by the user- it is already a member of the <code>DIZ_WINDOW</code> class.
+
+<h2><a id="declarations">Declaration</a></h2>
+<pre class="code">
+//This is our window info structure- used to describe all the characteristics of a window we want
+struct DIZ_WNDINFO {
+	//The title for our window
+	char *title;
+	//The width, height, and colour bits for our window
+	int width, height, bits;
+	//The mode of our window- typically suggests 2D, 3D, or other relevant modes
+	int mode;
+	//Our Near and Far values- indicate the draw distances of our OpenGL scene
+	GLfloat zNear, zFar;
+	//Some flags to indicate whether we want a fullscreen window, a menu, etc.
+	bool fullscreen, showCursor, menu;
+	//A pointer to our window procedure for handling messages
+	WNDPROC *wndProc;
+};
+</pre>
+
+<h4>char *title</h4>
+This is simply the title for the window- what will appear at the top when created.
+
+<h4>int width</h4>
+The width in pixels of the window. Default is <code>640</code>.
+
+<h4>int height</h4>
+The height in pixels of the window. Default is <code>480</code>.
+
+<h4>int bits</h4>
+The colour bits for the window. Default is <code>16</code>.
+
+<h4>int mode</h4>
+This is the OpenGL display mode of the window, so far only 2D or 3D. Set this equal to DIZ_2D or DIZ_3D for their respective drawing modes.
+Default is <code>DIZ_3D</code>.
+
+<h4>GLfloat zNear</h4>
+This is the nearest drawing point for our scene, i.e. anything closer than this point will not be drawn. Default is <code>0.1f</code>.
+
+<h4>GLfloat zFar</h4>
+This is the furthest drawing point for the scene, i.e. anything beyond this point will not be drawn. Default is <code>100.0f</code>.
+
+<h4>bool fullscreen</h4>
+Indicates whether or not the window shall be fullscreen or not. Default is <code>false</code>.
+
+<h4>bool showCursor</h4>
+Indicates whether or not the mouse cursor will be shown when inside the window. Default is <code>true</code>.
+
+<h4>bool menu</h4>
+Indicates whether or not the window is using a Menu. Currently however there is no way of implementing a menu in a DiZ Window. Default
+is <code>false</code>.
+
+<h4>WNDPROC *wndProc</h4>
+This must point to the window's callback procedure. This is an important part that should NOT be forgotten.
+
+<h2><a id="example">Example</a></h2>
+
+The following example demonstrates the setup of a <code>DIZ_WNDINFO</code> structure.
+
+<pre class="code">
+    //Forward-declare our Window Procedure function
+    LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+    //Set our Window title
+    window.info.title		= "Blind- LineForm Test";
+    //Set our Window width and height
+    window.info.width		= 640;
+    window.info.height		= 480;
+    //Specify our desired Colour Bits
+    window.info.bits		= 16;
+    //Disable fullscreen
+    window.info.fullscreen	= false;
+    //Disable the menu
+    window.info.menu		= false;
+    //Show the cursor
+    window.info.showCursor	= true;
+    //Set our Window for 3D drawing
+    window.info.mode		= DIZ_3D;
+    //Specify our Near and Far draw distances
+    window.info.zNear		= 0.1f;
+    window.info.zFar		= 100.0f;
+    //Specify our wndProc function
+    window.info.wndProc		= (WNDPROC *)WndProc;
+</pre>
+
+When setting up a <code>DIZ_WNDINFO</code> structure, it is important you have your Window Procedure declared if not defined. This function
+will of course be used to handle all messages incoming to your window.<br /><br />
+
+If you are not familiar with the WndProc function, you may look at the first full DiZ Example for further explanation.
+</BODY>
+
+</HTML>
