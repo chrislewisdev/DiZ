@@ -4,7 +4,7 @@ Defines the DIZ_WINDOW class in diz-graphics.h
 ********************************************/
 
 //Include our graphics header
-#include "diz-graphics.h"
+#include "../Include/diz-graphics.h"
 
 //Define our Constructor- basically initalises all our properties to safe values
 DIZ_WINDOW::DIZ_WINDOW() {

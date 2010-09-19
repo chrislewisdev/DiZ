@@ -4,7 +4,7 @@
 ***************************************/
 
 //Declare our include file- of course
-#include "diz-graphics.h"
+#include "../Include/diz-graphics.h"
 
 //Define our constructor- initialises all of our values to safe settings
 DIZ_TEXTURE::DIZ_TEXTURE() {

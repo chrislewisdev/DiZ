@@ -4,7 +4,7 @@
 *********************************************/
 
 //Declare our include file
-#include "diz-sound.h"
+#include "../Include/diz-sound.h"
 
 //Define our Constructor to intialise anything necessary to a default value
 DIZ_BUFFER::DIZ_BUFFER() {

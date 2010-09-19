@@ -63,6 +63,8 @@ public:
 	bool stop();
 	//This function pauses the source
 	bool pause();
+	//This function will fade from a certain volume to another
+	void fade(float start, float end, int loops);
 	//This function deletes our source
 	void kill();
 
@@ -71,6 +73,8 @@ public:
 	DIZ_SOURCEINFO info;
 	//The handle for the source
 	ALuint src;
+	//Declare our desired fading destination and our fading rate
+	float fadeDest, fadeRate;
 };
 
 //This class handles the settings of the OpenAL Listener object

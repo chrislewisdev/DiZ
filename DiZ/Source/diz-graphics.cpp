@@ -4,7 +4,7 @@
 ******************************************/
 
 //Include our header file for everything we need
-#include "diz-graphics.h"
+#include "../Include/diz-graphics.h"
 
 //This function loads a Bitmap image and returns the info
 AUX_RGBImageRec *LoadBMP(char *fname) {

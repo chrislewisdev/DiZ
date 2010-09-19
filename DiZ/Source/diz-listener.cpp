@@ -4,7 +4,7 @@
 **************************************/
 
 //Declare our include file
-#include "diz-sound.h"
+#include "../Include/diz-sound.h"
 
 //Define our Constructor, initialise everything and start up our alut session
 DIZ_LISTENER::DIZ_LISTENER() {

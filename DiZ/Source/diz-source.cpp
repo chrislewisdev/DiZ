@@ -4,7 +4,7 @@
 ****************************************/
 
 //Declare our include file
-#include "diz-sound.h"
+#include "../Include/diz-sound.h"
 
 //Define our Constructor- generates our source and sets everything to default values
 DIZ_SOURCE::DIZ_SOURCE() {
@@ -32,7 +32,9 @@ DIZ_SOURCE::~DIZ_SOURCE() {
 
 //This function sets the source to use the specified buffer
 bool DIZ_SOURCE::setBuffer(ALint buf) {
+	//Specify our new source
 	alSourcei(src, AL_BUFFER, buf);
+	//Check for any errors
 	if (alGetError() != AL_NO_ERROR) {
 		return false;
 	}else {
@@ -42,6 +44,12 @@ bool DIZ_SOURCE::setBuffer(ALint buf) {
 
 //This function sets all our properties for our OpenAL source
 bool DIZ_SOURCE::update() {
+	//Check if we need to fade our volume at all
+	if (info.gain != fadeDest) {
+		//If we do, add on our fading rate
+		info.gain += fadeRate;
+	}
+
 	//Set our Position
 	alSourcefv(src, AL_POSITION, info.pos);
 	//Set our Velocity
@@ -93,6 +101,17 @@ bool DIZ_SOURCE::pause() {
 	}else {
 		return true;
 	}
+}
+
+//This function will fade from a certain volume to another
+void DIZ_SOURCE::fade(float start, float end, int loops) {
+	//Declare a variable to hold the difference between our two volumes
+	float difference = start - end;
+
+	//Set our desired volume to our end volume
+	fadeDest = end;
+	//Calculate our fading rate according to how many loops in which we want to cover our difference
+	fadeRate = difference / (float)loops;
 }
 
 //This function deletes the source

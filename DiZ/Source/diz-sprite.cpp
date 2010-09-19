@@ -4,7 +4,7 @@
 *********************************************/
 
 //Include our header
-#include "diz-objects.h"
+#include "../Include/diz-objects.h"
 
 //Declare our Constructor to initialise everything to some safe values
 DIZ_SPRITE::DIZ_SPRITE() {

@@ -4,7 +4,7 @@
 ****************************************/
 
 //Declare our include file
-#include "diz-graphics.h"
+#include "../Include/diz-graphics.h"
 
 //Define our Constructor for the class- initialise everything
 DIZ_FONT::DIZ_FONT() {
