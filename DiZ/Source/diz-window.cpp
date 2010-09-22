@@ -239,7 +239,7 @@ bool DIZ_WINDOW::createWindow() {
 	}
 
 	//Here we declare our Pixel Format Descriptor- one of the more fiddly bits
-	//This is another part of window setup I don't completely get- plenty of values I don't understand
+	//This is one part of window setup I don't completely get- plenty of values I don't understand
 	static PIXELFORMATDESCRIPTOR pfd = {	sizeof(PIXELFORMATDESCRIPTOR),		//Indicator of the size of our structure
 											1,									//Version number of the PFD
 											PFD_DRAW_TO_WINDOW |				//Here we set some styles we need- Draw to a Window
