@@ -21,13 +21,25 @@ DIZ_BUFFER::~DIZ_BUFFER() {
 
 //This function loads the specified file and properly creates our buffer
 bool DIZ_BUFFER::load() {
+	//Declare our data storage for the WAV file
+	ALenum format;
+    ALsizei size;
+    ALvoid* data;
+    ALsizei freq;
+    ALboolean loop;
+
 	//First check that we have an actual filename
 	if (fname == NULL) {
 		return false;
 	}
 
 	//Then create our buffer using the alut function
-	buf = alutCreateBufferFromFile(fname);
+	//buf = alutCreateBufferFromFile(fname);
+	//Create our buffer
+	alGenBuffers(1, &buf);
+	alutLoadWAVFile("Resources/traffic.wav", &format, &data, &size, &freq, &loop);
+    alBufferData(buf, format, data, size, freq);
+    alutUnloadWAV(format, data, size, freq);
 
 	//Then check for any errors and return accordingly
 	if (alGetError() != AL_NO_ERROR) {

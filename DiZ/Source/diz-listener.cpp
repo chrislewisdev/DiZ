@@ -6,7 +6,7 @@
 //Declare our include file
 #include "../Include/diz-sound.h"
 
-//Define our Constructor, initialise everything and start up our alut session
+//Define our Constructor, initialise everything and set up our ALC Contexts
 DIZ_LISTENER::DIZ_LISTENER() {
 	//Set our default Position values
 	pos[0] = 0.0f; pos[1] = 0.0f; pos[2] = 0.0f;
@@ -14,9 +14,6 @@ DIZ_LISTENER::DIZ_LISTENER() {
 	vel[0] = 0.0f; vel[1] = 0.0f; vel[2] = 0.0f;
 	//Set our default Orientation values
 	ori[0] = 0.0f; ori[1] = 0.0f; ori[2] = -1.0f; ori[3] = 0.0f; ori[4] = 1.0f; ori[5] = 0.0f;
-
-	//Finally, initialise alut so all our sound will work
-	//alutInit(NULL, NULL);
 
 	//Now set up our audio context- start by opening an Audio Device
 	hDevice = alcOpenDevice("DirectSound3D");
@@ -29,9 +26,8 @@ DIZ_LISTENER::DIZ_LISTENER() {
 		MessageBox(NULL, "Couldn't create an Audio Context.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
 	}
 
-	//Then set our context as current, and start it processing just in case
+	//Then set our context as current
 	alcMakeContextCurrent(hContext);
-	alcProcessContext(hContext);
 }
 
 //Define our Deconstructor
@@ -57,11 +53,8 @@ bool DIZ_LISTENER::update() {
 	}
 }
 
-//This function exits our alut session and so on
+//This function closes our ALC Contexts
 void DIZ_LISTENER::kill() {
-	//Exit alut
-	//alutExit();
-
 	//Start off by releasing our Audio Context
 	alcMakeContextCurrent(NULL);
 	//Then delete it

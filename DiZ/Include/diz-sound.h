@@ -93,7 +93,7 @@ public:
 	//Declare our position, velocity and orientation arrays
 	float pos[3], vel[3], ori[6];
 
-private:
+//private:
 	//Declare our private properties
 	//Declare our ALC Device handle
 	ALCdevice *hDevice;
