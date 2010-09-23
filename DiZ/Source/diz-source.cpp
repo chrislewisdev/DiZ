@@ -31,7 +31,7 @@ DIZ_SOURCE::~DIZ_SOURCE() {
 }
 
 //This function sets the source to use the specified buffer
-bool DIZ_SOURCE::setBuffer(ALint buf) {
+bool DIZ_SOURCE::setBuffer(ALuint buf) {
 	//Specify our new source
 	alSourcei(src, AL_BUFFER, buf);
 	//Check for any errors

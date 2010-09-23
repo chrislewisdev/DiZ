@@ -37,7 +37,7 @@ bool DIZ_BUFFER::load() {
 	//buf = alutCreateBufferFromFile(fname);
 	//Create our buffer
 	alGenBuffers(1, &buf);
-	alutLoadWAVFile("Resources/traffic.wav", &format, &data, &size, &freq, &loop);
+	alutLoadWAVFile(fname, &format, &data, &size, &freq, &loop);
     alBufferData(buf, format, data, size, freq);
     alutUnloadWAV(format, data, size, freq);
 

@@ -20,7 +20,7 @@ struct DIZ_SOURCEINFO {
 	//The Loop indicator (AL_TRUE or AL_FALSE)
 	ALint loop;
 	//And also keep a pointer to the buffer we want to use
-	ALint *buf;
+	ALuint *buf;
 };
 
 //This class contains functions and properties related to OpenAL Buffers
@@ -39,10 +39,13 @@ public:
 	void setFilename(char f[]);
 
 	//Declare our properties
-	//The filename of the file we want to use for our buffer
-	char fname[256];
 	//The handle for the buffer
 	ALuint buf;
+
+private:
+	//Declare our private properties
+	//The filename of the file we want to use for our buffer
+	char fname[256];
 };
 
 //This class handles all the source-related functions and properties
@@ -54,7 +57,7 @@ public:
 
 	//Declare our public functions
 	//This function sets the specified buffer for the source to use
-	bool setBuffer(ALint buf);
+	bool setBuffer(ALuint buf);
 	//This function updates the source's properties
 	bool update();
 	//This function starts the source playing
@@ -73,6 +76,9 @@ public:
 	DIZ_SOURCEINFO info;
 	//The handle for the source
 	ALuint src;
+
+private:
+	//Declare our private properties
 	//Declare our desired fading destination and our fading rate
 	float fadeDest, fadeRate;
 };
@@ -85,6 +91,8 @@ public:
 	~DIZ_LISTENER();
 
 	//Declare our public functions
+	//This function will set up our ALC contexts and so on
+	void init();
 	//This function updates the Listener's settings
 	bool update();
 	//This function ends our alut session and everything
@@ -93,7 +101,7 @@ public:
 	//Declare our position, velocity and orientation arrays
 	float pos[3], vel[3], ori[6];
 
-//private:
+private:
 	//Declare our private properties
 	//Declare our ALC Device handle
 	ALCdevice *hDevice;

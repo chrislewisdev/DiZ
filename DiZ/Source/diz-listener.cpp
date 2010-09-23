@@ -15,7 +15,20 @@ DIZ_LISTENER::DIZ_LISTENER() {
 	//Set our default Orientation values
 	ori[0] = 0.0f; ori[1] = 0.0f; ori[2] = -1.0f; ori[3] = 0.0f; ori[4] = 1.0f; ori[5] = 0.0f;
 
-	//Now set up our audio context- start by opening an Audio Device
+	//Initialise our device/context pointers to NULL
+	hDevice = NULL;
+	hContext = NULL;
+	init();
+}
+
+//Define our Deconstructor
+DIZ_LISTENER::~DIZ_LISTENER() {
+
+}
+
+//This function will set up our ALC contexts
+void DIZ_LISTENER::init() {
+	//Set up our audio context- start by opening an Audio Device
 	hDevice = alcOpenDevice("DirectSound3D");
 	if (hDevice == NULL) {
 		MessageBox(NULL, "Couldn't open an Audio Device.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
@@ -28,11 +41,6 @@ DIZ_LISTENER::DIZ_LISTENER() {
 
 	//Then set our context as current
 	alcMakeContextCurrent(hContext);
-}
-
-//Define our Deconstructor
-DIZ_LISTENER::~DIZ_LISTENER() {
-
 }
 
 //This function sets the OpenAL Listener values to our values
@@ -59,6 +67,8 @@ void DIZ_LISTENER::kill() {
 	alcMakeContextCurrent(NULL);
 	//Then delete it
 	alcDestroyContext(hContext);
+	hContext = NULL;
 	//And finally close our Audio Device
 	alcCloseDevice(hDevice);
+	hDevice = NULL;
 }
