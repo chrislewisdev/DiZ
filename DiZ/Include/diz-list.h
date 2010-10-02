@@ -34,6 +34,8 @@ public:
 	void deleteItem(int id);
 	//This function will delete a specified item found by its char-string ID
 	void deleteItem(char id[]);
+	//This function will return the amount of items in our list
+	int numItems();
 	//This function will clear out our entire list
 	void kill();
 
@@ -63,6 +65,9 @@ private:
 	TYPE item;
 	//Declare our next item in our list
 	DIZ_LIST<TYPE> *next;
+
+	//Now declare a static variable for the amount of items we have
+	static int numItems;
 };
 
 //Declare our Constructor
@@ -72,6 +77,7 @@ template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
 	strId[0] = '\0';
 	id = 0;
 	next = NULL;
+	numItems = 0;
 }
 
 //Declare our Destructor
@@ -199,6 +205,11 @@ template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(char id[]) {
 	}
 }
 
+//This function will return the number of items in our list
+template <class TYPE> int DIZ_LIST<TYPE>::numItems() {
+	return numItems;
+}
+
 //This function will kdelete our entire list of items
 template <class TYPE> void DIZ_LIST<TYPE>::kill() {
 	//Check if we have a base item- and if we do, set off our deletion recursion
@@ -225,6 +236,9 @@ template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::addItem() {
 	cdtr = cdtr->next;
 	//Assign our new object our next ID value in line
 	cdtr->id = tempID + 1;
+
+	//Then increment our item counter
+	numItems++;
 
 	//Now return our newly created item
 	return cdtr;
@@ -282,6 +296,9 @@ template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(DIZ_LIST<TYPE> *target, bo
 			prev->next = NULL;
 		}
 	}
+
+	//Now finally, decrement our item counter
+	numItems--;
 }
 
 //This function will set the internal ID of a specified item

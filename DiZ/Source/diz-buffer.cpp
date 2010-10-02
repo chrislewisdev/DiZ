@@ -33,8 +33,6 @@ bool DIZ_BUFFER::load() {
 		return false;
 	}
 
-	//Then create our buffer using the alut function
-	//buf = alutCreateBufferFromFile(fname);
 	//Create our buffer
 	alGenBuffers(1, &buf);
 	alutLoadWAVFile(fname, &format, &data, &size, &freq, &loop);
