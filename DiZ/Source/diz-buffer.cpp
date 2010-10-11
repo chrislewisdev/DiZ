@@ -68,3 +68,8 @@ void DIZ_BUFFER::setFilename(char f[]) {
 	//Then just null-terminate our string
 	fname[i] = '\0';
 }
+
+//This function returns our current filename
+char *DIZ_BUFFER::getFilename() {
+	return fname;
+}

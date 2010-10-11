@@ -23,6 +23,9 @@ DIZ_SOURCE::DIZ_SOURCE() {
 	info.pitch = 1.0f;
 	//And set looping to default false
 	info.loop = AL_FALSE;
+
+	//Initialise our buffer flag to false
+	info.buf = false;
 }
 
 //Define our Deconstructor
@@ -36,9 +39,11 @@ bool DIZ_SOURCE::setBuffer(ALuint buf) {
 	alSourcei(src, AL_BUFFER, buf);
 	//Check for any errors
 	if (alGetError() != AL_NO_ERROR) {
-		MessageBox(NULL, "Error setting buffer.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
+		//MessageBox(NULL, "Error setting buffer.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}else {
+		//If everything went fine, specify that we now have a buffer
+		info.buf = true;
 		return true;
 	}
 }
@@ -64,9 +69,9 @@ bool DIZ_SOURCE::update() {
 	}
 
 	//Set our Position
-	alSourcefv(src, AL_POSITION, info.pos);
+	alSource3f(src, AL_POSITION, info.pos[0], info.pos[1], info.pos[2]);
 	//Set our Velocity
-	alSourcefv(src, AL_VELOCITY, info.vel);
+	alSource3f(src, AL_VELOCITY, info.vel[0], info.vel[1], info.vel[2]);
 	//Set our Pitch
 	alSourcef(src, AL_PITCH, info.pitch);
 	//Set our Gain
@@ -76,7 +81,7 @@ bool DIZ_SOURCE::update() {
 
 	//Check for any errors and return accordingly
 	if (alGetError() != AL_NO_ERROR) {
-		MessageBox(NULL, "Error setting Source values.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
+		//MessageBox(NULL, "Error setting Source values.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}else {
 		return true;

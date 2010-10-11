@@ -14,13 +14,13 @@
 //This structure holds info related to an OpenAL Source
 struct DIZ_SOURCEINFO {
 	//The position and velocity arrays of the source
-	float pos[3], vel[3];
+	ALfloat pos[3], vel[3];
 	//The Pitch and Gain properties of the source
-	float pitch, gain;
+	ALfloat pitch, gain;
 	//The Loop indicator (AL_TRUE or AL_FALSE)
 	ALint loop;
-	//And also keep a pointer to the buffer we want to use
-	ALuint *buf;
+	//And maintain a flag of whether or not our buffer's been set
+	bool buf;
 };
 
 //This class contains functions and properties related to OpenAL Buffers
@@ -37,6 +37,8 @@ public:
 	void kill();
 	//This function sets our desired filename to the specified value
 	void setFilename(char f[]);
+	//This function will return our filename
+	char *getFilename();
 
 	//Declare our properties
 	//The handle for the buffer
