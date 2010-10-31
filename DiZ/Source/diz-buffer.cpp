@@ -41,7 +41,7 @@ bool DIZ_BUFFER::load() {
 
 	//Then check for any errors and return accordingly
 	if (alGetError() != AL_NO_ERROR) {
-		MessageBox(NULL, "Error creating buffer from file.", "DiZ Load Error", MB_OK | MB_ICONINFORMATION);
+		//MessageBox(NULL, "Error creating buffer from file.", "DiZ Load Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}else {
 		return true;

@@ -24,18 +24,26 @@ public:
 	TYPE *addItem(int id);
 	//This function will add a new item with a char-string ID
 	TYPE *addItem(char id[]);
-	//This function will add a new item with both types of IDs
+	//This function will add a new item's contents with both types of IDs
 	TYPE *addItem(int id, char strId[]);
-	//This function will retrieve an item by its numeric ID
+	//This function will retrieve an item's contents by its numeric ID
 	TYPE *getItem(int id);
 	//This function will retrieve an item by its char-string ID
 	TYPE *getItem(char id[]);
+	//This function will retrieve a successive item from an item located by its numeric ID
+	TYPE *nextItem(int id);
+	//This function will retrieve a successive item, using a string ID
+	TYPE *nextItem(char id[]);
+	//This function will retrieve a previous item from an item located by its numeric ID
+	TYPE *previousItem(int id);
+	//This function will retrieve a previous using a string ID
+	TYPE *previousItem(char id[]);
 	//This function will delete a specified item found by its numeric ID
 	void deleteItem(int id);
 	//This function will delete a specified item found by its char-string ID
 	void deleteItem(char id[]);
 	//This function will return the amount of items in our list
-	int numItems();
+	int numberItems();
 	//This function will clear out our entire list
 	void kill();
 
@@ -51,6 +59,10 @@ private:
 	DIZ_LIST<TYPE> *addItem();
 	//This function will retrieve an item by its ordered ID
 	DIZ_LIST<TYPE> *getOrderedItem(int id);
+	//This function will retrieve an item by its numeric ID
+	DIZ_LIST<TYPE> *getIDItem(int id);
+	//This function will retrieve an item by its string ID
+	DIZ_LIST<TYPE> *getIDItem(char id[]);
 	//This function will delete a specified DIZ_LIST item
 	void deleteItem(DIZ_LIST<TYPE> *target, bool join);
 	//This function will set a specified item's ID
@@ -69,6 +81,9 @@ private:
 	//Now declare a static variable for the amount of items we have
 	static int numItems;
 };
+
+//Declare our static variable
+template <class TYPE> int DIZ_LIST<TYPE>::numItems;
 
 //Declare our Constructor
 template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
@@ -139,38 +154,85 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem(int id, char strId[]) {
 
 //This function will retrieve a specified item by its numeric ID
 template <class TYPE> TYPE *DIZ_LIST<TYPE>::getItem(int id) {
-	//Create a conductor variable set to our base item
-	DIZ_LIST<TYPE> *cdtr = this;
+	//Create a conductor variable set to our desired item
+	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
 
-	//Loop as long as there are any items left and we haven't found our ID
-	while (cdtr != NULL && cdtr->exId != id) {
-		cdtr = cdtr->next;
-	}
-	//Once we're here, check if we have our desired ID or not
-	if (cdtr != NULL && cdtr->exId == id) {
-		//If we do, return it
+	//Make sure it exists before returning its contents
+	if (cdtr != NULL) {
 		return &cdtr->item;
 	}else {
-		//Otherwise, return NULL as no result
 		return NULL;
 	}
 }
 
 //This function will retrieve a specified item by its string ID
 template <class TYPE> TYPE *DIZ_LIST<TYPE>::getItem(char id[]) {
-	//Create a conductor variable set to our base item
-	DIZ_LIST<TYPE> *cdtr = this;
+	//Create a conductor variable set to our desired item
+	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
 
-	//Loop as long as there are any items left and we haven't found our ID
-	while (cdtr != NULL && !checkString(cdtr->strId, id)) {
-		cdtr = cdtr->next;
-	}
-	//Once we're here, check if we have our desired ID or not
-	if (cdtr != NULL && checkString(cdtr->strId, id)) {
-		//If we do, return it
+	//Make sure it exists before returning its contents
+	if (cdtr != NULL) {
 		return &cdtr->item;
 	}else {
-		//Otherwise, return NULL as no result
+		return NULL;
+	}
+}
+
+//This function will retrieve an item's successor with a numeric ID
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::nextItem(int id) {
+	//Create a conductor variable set to our desired item
+	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
+	DIZ_LIST<TYPE> *next = cdtr->next;
+
+	//Make sure it exists before returning its contents
+	if (next != NULL) {
+		return &next->item;
+	}else {
+		return NULL;
+	}
+}
+
+//This function will retrieve an item's successor using a string ID
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::nextItem(char id[]) {
+	//Create a conductor variable set to our desired item
+	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
+	//Retrieve our next item
+	DIZ_LIST<TYPE> *next = cdtr->next;
+
+	//Make sure it exists before returning its contents
+	if (next != NULL) {
+		return &next->item;
+	}else {
+		return NULL;
+	}
+}
+
+//This function will retrieve an item's previous one with its numeric ID
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::previousItem(int id) {
+	//Create a conductor variable set to our desired item
+	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
+	//Retrieve our previous item
+	DIZ_LIST<TYPE> *prev = getOrderedItem(cdtr->id - 1);
+
+	//Make sure it exists before returning its contents
+	if (prev != NULL) {
+		return &next->item;
+	}else {
+		return NULL;
+	}
+}
+
+//This function will retrieve a previous item from the original's string ID
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::previousItem(char id[]) {
+	//Create a conductor variable set to our desired item
+	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
+	//Retrieve our previous item
+	DIZ_LIST<TYPE> *prev = getOrderedItem(cdtr->id - 1);
+
+	//Make sure it exists before returning its contents
+	if (prev != NULL) {
+		return &next->item;
+	}else {
 		return NULL;
 	}
 }
@@ -206,7 +268,7 @@ template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(char id[]) {
 }
 
 //This function will return the number of items in our list
-template <class TYPE> int DIZ_LIST<TYPE>::numItems() {
+template <class TYPE> int DIZ_LIST<TYPE>::numberItems() {
 	return numItems;
 }
 
@@ -255,6 +317,44 @@ template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::getOrderedItem(int id) {
 	}
 	//Once we've hit the end, check if we've found our desired ID- if we do, return it
 	if (cdtr != NULL && cdtr->id == id) {
+		return cdtr;
+	}else {
+		//Otherwise, return NULL as no result
+		return NULL;
+	}
+}
+
+//This function wil retrieve an item by its numeric ID
+template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::getIDItem(int id) {
+	//Create a conductor variable set to our base item
+	DIZ_LIST<TYPE> *cdtr = this;
+
+	//Loop as long as there are any items left and we haven't found our ID
+	while (cdtr != NULL && cdtr->exId != id) {
+		cdtr = cdtr->next;
+	}
+	//Once we're here, check if we have our desired ID or not
+	if (cdtr != NULL && cdtr->exId == id) {
+		//If we do, return it
+		return cdtr;
+	}else {
+		//Otherwise, return NULL as no result
+		return NULL;
+	}
+}
+
+//This function will retrieve an item by its string ID
+template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::getIDItem(char id[]) {
+	//Create a conductor variable set to our base item
+	DIZ_LIST<TYPE> *cdtr = this;
+
+	//Loop as long as there are any items left and we haven't found our ID
+	while (cdtr != NULL && !checkString(cdtr->strId, id)) {
+		cdtr = cdtr->next;
+	}
+	//Once we're here, check if we have our desired ID or not
+	if (cdtr != NULL && checkString(cdtr->strId, id)) {
+		//If we do, return it
 		return cdtr;
 	}else {
 		//Otherwise, return NULL as no result
