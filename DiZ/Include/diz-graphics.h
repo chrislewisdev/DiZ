@@ -16,10 +16,14 @@
 #include <stdio.h>			//Stdio.h- used mainly for texture loading
 
 //Define some constants that we would like to be used
-#define		DIZ_2D				0		//This indicates the use of 2D graphics in a window
-#define		DIZ_3D				1		//And this, 3D graphics
-#define		DIZ_FONT_BITMAP		2		//This indicates the use of a Bitmap Font
-#define		DIZ_FONT_OUTLINE	3		//This indicates the use of an Outline font
+#define		DIZ_2D					0		//This indicates the use of 2D graphics in a window
+#define		DIZ_3D					1		//And this, 3D graphics
+
+#define		DIZ_FONT_BITMAP			2		//This indicates the use of a Bitmap Font
+#define		DIZ_FONT_OUTLINE		3		//This indicates the use of an Outline font
+
+#define		DIZ_GRAPHICS_OPENGL		4		//This indicates an OpenGL graphics mode
+#define		DIZ_GRAPHICS_DIRECT3D9	5		//This indicates Direct3D9 graphics mode
 
 //This is our window info structure- used to describe all the characteristics of a window we want
 struct DIZ_WNDINFO {
@@ -27,6 +31,8 @@ struct DIZ_WNDINFO {
 	char *title;
 	//The width, height, and colour bits for our window
 	int width, height, bits;
+	//The graphics mode of our window- OPENGL or DIRECT3D9
+	int graphics;
 	//The mode of our window- typically suggests 2D, 3D, or other relevant modes
 	int mode;
 	//Our Near and Far values- indicate the draw distances of our OpenGL scene
@@ -90,6 +96,11 @@ public:
 	HWND hWnd;
 	//Declare a handle for our application instance
 	HINSTANCE hInstance;
+
+private:
+	//Declare our private functions
+	//This function creates our OpenGL scene
+	bool createGL();
 };
 
 //This class is used to handle loading and properties of textures

@@ -16,6 +16,7 @@ DIZ_WINDOW::DIZ_WINDOW() {
 	info.fullscreen	= false;
 	info.menu		= false;
 	info.showCursor	= true;
+	info.graphics	= DIZ_GRAPHICS_OPENGL;
 	info.mode		= DIZ_3D;
 	info.zNear		= 0.1f;
 	info.zFar		= 100.0f;
@@ -131,9 +132,6 @@ void DIZ_WINDOW::killWindow() {
 
 //This function creates the window according to our info
 bool DIZ_WINDOW::createWindow() {
-	//First declare a handle for our pixel format for later on
-	GLuint PixelFormat;
-
 	//Declare our window Style holders
 	DWORD dwStyle, dwExStyle;
 
@@ -238,6 +236,30 @@ bool DIZ_WINDOW::createWindow() {
 		return false;
 	}
 
+	if (info.graphics == DIZ_GRAPHICS_OPENGL) {
+		if (!createGL()) {
+			return false;
+		}
+	}else if (info.graphics == DIZ_GRAPHICS_DIRECT3D9) {
+
+	}
+
+	//Now we set our window to be shown
+	ShowWindow(hWnd, SW_SHOW);
+	//Now force it in front of other windows
+	SetForegroundWindow(hWnd);
+	//Get keyboard focus for our application
+	SetFocus(hWnd);
+
+	//And exit
+	return true;
+}
+
+//This function creates our OpenGL scene
+bool DIZ_WINDOW::createGL() {
+	//First declare a handle for our pixel format for later on
+	GLuint pixelFormat;
+
 	//Here we declare our Pixel Format Descriptor- one of the more fiddly bits
 	//This is one part of window setup I don't completely get- plenty of values I don't understand
 	static PIXELFORMATDESCRIPTOR pfd = {	sizeof(PIXELFORMATDESCRIPTOR),		//Indicator of the size of our structure
@@ -269,15 +291,15 @@ bool DIZ_WINDOW::createWindow() {
 	}
 
 	//And try to find a suitable Pixel Format to suit our descriptor
-	PixelFormat = ChoosePixelFormat(hDC, &pfd);
-	if (!PixelFormat) {
+	pixelFormat = ChoosePixelFormat(hDC, &pfd);
+	if (!pixelFormat) {
 		killWindow();
 		MessageBox(NULL, "Can't find a pixel format.", "DiZ Startup Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}
 
 	//Attempt to use our Pixel Format once we have it
-	if (!SetPixelFormat(hDC, PixelFormat, &pfd)) {
+	if (!SetPixelFormat(hDC, pixelFormat, &pfd)) {
 		killWindow();
 		MessageBox(NULL, "Can't set pixel format.", "DiZ Startup Error", MB_OK | MB_ICONINFORMATION);
 		return false;
@@ -298,12 +320,6 @@ bool DIZ_WINDOW::createWindow() {
 		return false;
 	}
 
-	//Now we set our window to be shown
-	ShowWindow(hWnd, SW_SHOW);
-	//Now force it in front of other windows
-	SetForegroundWindow(hWnd);
-	//Get keyboard focus for our application
-	SetFocus(hWnd);
 	//And set our OpenGL scene to the right size
 	resizeGL();
 
@@ -314,6 +330,6 @@ bool DIZ_WINDOW::createWindow() {
 		return false;
 	}
 
-	//And exit
+	//THen exit
 	return true;
 }
