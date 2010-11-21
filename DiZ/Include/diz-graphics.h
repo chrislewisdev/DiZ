@@ -13,6 +13,7 @@
 #include <gl/gl.h>			//Gl.h- used for our main OpenGL functions
 #include <gl/glu.h>			//Glu.h- used for various extra OpenGL functionalities
 #include <gl/glaux.h>		//Glaux.h- used mainly for image loading
+#include <d3d9.h>			//D3D9.h- provides Direct3D9 functions
 #include <stdio.h>			//Stdio.h- used mainly for texture loading
 
 //Define some constants that we would like to be used
@@ -25,6 +26,14 @@
 #define		DIZ_GRAPHICS_OPENGL		4		//This indicates an OpenGL graphics mode
 #define		DIZ_GRAPHICS_DIRECT3D9	5		//This indicates Direct3D9 graphics mode
 
+//This structure will hold OpenGL info for a window
+struct DIZ_INFO_GL {
+	//The mode of our window- 2D, 3D, etc
+	int mode;
+	//The Near and Far draw distances for our scene
+	GLfloat zNear, zFar;
+};
+
 //This is our window info structure- used to describe all the characteristics of a window we want
 struct DIZ_WNDINFO {
 	//The title for our window
@@ -32,11 +41,11 @@ struct DIZ_WNDINFO {
 	//The width, height, and colour bits for our window
 	int width, height, bits;
 	//The graphics mode of our window- OPENGL or DIRECT3D9
-	int graphics;
-	//The mode of our window- typically suggests 2D, 3D, or other relevant modes
 	int mode;
-	//Our Near and Far values- indicate the draw distances of our OpenGL scene
-	GLfloat zNear, zFar;
+	//Our OpenGL settings
+	DIZ_INFO_GL gl;
+	//Our Direct3D settings
+	D3DPRESENT_PARAMETERS d3d;
 	//Some flags to indicate whether we want a fullscreen window, a menu, etc.
 	bool fullscreen, showCursor, menu;
 	//A pointer to our window procedure for handling messages
@@ -96,11 +105,21 @@ public:
 	HWND hWnd;
 	//Declare a handle for our application instance
 	HINSTANCE hInstance;
+	//Declare a Direct3D Interface
+	IDirect3D9 *interface3D9;
+	//Declare a Direct3D Device
+	IDirect3DDevice9 *device3D9;
 
 private:
 	//Declare our private functions
 	//This function creates our OpenGL scene
 	bool createGL();
+	//This function destroys our OpenGL scene
+	void killGL();
+	//This function creates our Direct3D scene
+	bool createD3D();
+	//This function destroys our Direct3D scene
+	void killD3D();
 };
 
 //This class is used to handle loading and properties of textures

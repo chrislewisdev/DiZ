@@ -16,11 +16,38 @@ DIZ_WINDOW::DIZ_WINDOW() {
 	info.fullscreen	= false;
 	info.menu		= false;
 	info.showCursor	= true;
-	info.graphics	= DIZ_GRAPHICS_OPENGL;
-	info.mode		= DIZ_3D;
-	info.zNear		= 0.1f;
-	info.zFar		= 100.0f;
+	info.mode		= DIZ_GRAPHICS_OPENGL;
 	info.wndProc	= NULL;
+
+	//Initialise our OpenGL settings
+	info.gl.mode	= DIZ_3D;
+	info.gl.zNear	= 0.1f;
+	info.gl.zFar	= 100.0f;
+
+	//Create our D3D interface and then initialise our settings
+	interface3D9 = Direct3DCreate9(D3D_SDK_VERSION);
+
+	//Clear out our settings
+	ZeroMemory(&info.d3d, sizeof(D3DPRESENT_PARAMETERS));
+
+	//Back Buffer Count and Format
+	info.d3d.BackBufferCount			= 1;
+	info.d3d.BackBufferFormat			= D3DFMT_R5G6B5;
+	//Multisampling Settings
+	info.d3d.MultiSampleType			= D3DMULTISAMPLE_NONE;
+	info.d3d.MultiSampleQuality			= 0;
+	//Buffer-Swap Setting
+	info.d3d.SwapEffect					= D3DSWAPEFFECT_DISCARD;
+	//No specific flags
+	info.d3d.Flags						= 0;
+	//Set our Refresh Rate settings
+	info.d3d.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
+	info.d3d.PresentationInterval		= D3DPRESENT_INTERVAL_DEFAULT;
+	//Set our Depth Buffer settings
+	info.d3d.EnableAutoDepthStencil		= true;
+	info.d3d.AutoDepthStencilFormat		= D3DFMT_D16_LOCKABLE;
+	//Set fullscreen settings
+	info.d3d.Windowed					= true;
 }
 
 //Define our Deconstructor
@@ -43,10 +70,10 @@ void DIZ_WINDOW::resizeGL() {
 	glLoadIdentity();
 
 	//Check if we want 3D or 2D projection
-	if (info.mode == DIZ_3D) {
+	if (info.gl.mode == DIZ_3D) {
 		//If we want 3D, set up our perspective for the scene
-		gluPerspective(45.0f, (GLfloat)info.width / (GLfloat)info.height, info.zNear, info.zFar);
-	}else if (info.mode == DIZ_2D) {
+		gluPerspective(45.0f, (GLfloat)info.width / (GLfloat)info.height, info.gl.zNear, info.gl.zFar);
+	}else if (info.gl.mode == DIZ_2D) {
 		//Otherwise, set up our screen dimensions for 2D projection
 		glOrtho(0, info.width, info.height, 0, 0, 1);
 	}
@@ -67,7 +94,7 @@ bool DIZ_WINDOW::initGL() {
 	//Set our depth value for depth clearing- about the one function I don't quite get in here
 	glClearDepth(1.0f);
 	//Check if we want 3D projection again
-	if (info.mode == DIZ_3D) {
+	if (info.gl.mode == DIZ_3D) {
 		//If we do, then we enable Depth Testing of course
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -85,15 +112,26 @@ bool DIZ_WINDOW::initGL() {
 
 //This function kills our window
 void DIZ_WINDOW::killWindow() {
-	//Check if we're in fullscreen mode
-	if (info.fullscreen) {
-		//If we are, change our display settings back to normal
-		ChangeDisplaySettings(0, NULL);
-	}
 	//Check if we need to re-show the cursor
 	if (!info.showCursor) {
 		//And, uh, do so if necessary
 		ShowCursor(true);
+	}
+
+	//Perform our kill routine according to which graphics mode we're in
+	if (info.mode == DIZ_GRAPHICS_OPENGL) {
+		killGL();
+	}else if (info.mode == DIZ_GRAPHICS_DIRECT3D9) {
+		killD3D();
+	}
+}
+
+//This function destroys our OpenGL scene
+void DIZ_WINDOW::killGL() {
+	//Check if we're in fullscreen mode
+	if (info.fullscreen) {
+		//If we are, change our display settings back to normal
+		ChangeDisplaySettings(0, NULL);
 	}
 
 	//Double check if we have a rendering context
@@ -130,6 +168,11 @@ void DIZ_WINDOW::killWindow() {
 	}
 }
 
+//This function destroys our Direct3D scene
+void DIZ_WINDOW::killD3D() {
+
+}
+
 //This function creates the window according to our info
 bool DIZ_WINDOW::createWindow() {
 	//Declare our window Style holders
@@ -154,7 +197,7 @@ bool DIZ_WINDOW::createWindow() {
 	wc.hbrBackground	= NULL;									//Set it to no background
 	wc.lpfnWndProc		= (WNDPROC)info.wndProc;				//Point it to our Window Procedure
 	wc.lpszMenuName		= NULL;									//Don't bother with a menu name
-	wc.lpszClassName	= "DiZ OpenGL";							//Set the name of our class
+	wc.lpszClassName	= "DiZ Window";							//Set the name of our class
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	//Specify our basic styles to use
 
 	//Attempt to Register our Window Class
@@ -218,7 +261,7 @@ bool DIZ_WINDOW::createWindow() {
 
 	//Now attempt to create our actual window
 	hWnd = CreateWindowEx(	dwExStyle,										//Use our Extended Styles we set
-							"DiZ OpenGL",									//Name of the Window Class
+							"DiZ Window",									//Name of the Window Class
 							info.title,										//Use our specified window title
 							WS_CLIPSIBLINGS | WS_CLIPCHILDREN | dwStyle,	//Set some main styles
 							0, 0,											//X/Y position of the window
@@ -236,12 +279,16 @@ bool DIZ_WINDOW::createWindow() {
 		return false;
 	}
 
-	if (info.graphics == DIZ_GRAPHICS_OPENGL) {
+	//Now create our graphics scene according to our specified one
+	if (info.mode == DIZ_GRAPHICS_OPENGL) {
+		//Check for any errors with our OpenGL creation
 		if (!createGL()) {
 			return false;
 		}
-	}else if (info.graphics == DIZ_GRAPHICS_DIRECT3D9) {
-
+	}else if (info.mode == DIZ_GRAPHICS_DIRECT3D9) {
+		if (!createD3D()) {
+			return false;
+		}
 	}
 
 	//Now we set our window to be shown
@@ -330,6 +377,12 @@ bool DIZ_WINDOW::createGL() {
 		return false;
 	}
 
-	//THen exit
+	//Then exit
+	return true;
+}
+
+//This function will create our Direct3D scene
+bool DIZ_WINDOW::createD3D() {
+
 	return true;
 }
