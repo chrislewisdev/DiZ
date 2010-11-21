@@ -124,6 +124,18 @@ void DIZ_WINDOW::killWindow() {
 	}else if (info.mode == DIZ_GRAPHICS_DIRECT3D9) {
 		killD3D();
 	}
+
+	//Finally, destroy the actual window and make sure nothing went wrong
+	if (hWnd && !DestroyWindow(hWnd)) {
+		MessageBox(NULL, "Failed to destroy window.", "DiZ Shutdown Error", MB_OK | MB_ICONINFORMATION);
+		hWnd = NULL;
+	}
+
+	//Now try to Unregister our Window Class
+	if (!UnregisterClass("DiZ Window", hInstance)) {
+		MessageBox(NULL, "Could not unregister window class.", "DiZ Shutdown Error", MB_OK | MB_ICONINFORMATION);
+		hInstance = NULL;
+	}
 }
 
 //This function destroys our OpenGL scene
@@ -154,23 +166,12 @@ void DIZ_WINDOW::killGL() {
 		MessageBox(NULL, "Failed to release DC.", "DiZ Shutdown Error", MB_OK | MB_ICONINFORMATION);
 		hDC = NULL;
 	}
-
-	//Finally, destroy the actual window and make sure nothing went wrong
-	if (hWnd && !DestroyWindow(hWnd)) {
-		MessageBox(NULL, "Failed to destroy window.", "DiZ Shutdown Error", MB_OK | MB_ICONINFORMATION);
-		hWnd = NULL;
-	}
-
-	//Now try to Unregister our Window Class
-	if (!UnregisterClass("DiZ OpenGL", hInstance)) {
-		MessageBox(NULL, "Could not unregister window class.", "DiZ Shutdown Error", MB_OK | MB_ICONINFORMATION);
-		hInstance = NULL;
-	}
 }
 
 //This function destroys our Direct3D scene
 void DIZ_WINDOW::killD3D() {
-
+	//Release our interface
+	interface3D9->Release();
 }
 
 //This function creates the window according to our info
@@ -207,7 +208,7 @@ bool DIZ_WINDOW::createWindow() {
 	}
 
 	//And check if we want to go fullscreen
-	if (info.fullscreen) {
+	if (info.fullscreen && info.mode == DIZ_GRAPHICS_OPENGL) {
 		//Declare our DEVMODE structure for screen settings
 		DEVMODE dwSettings;
 		//Clear it out
@@ -242,7 +243,7 @@ bool DIZ_WINDOW::createWindow() {
 	}
 
 	//Depending on whether or not we're still in fullscreen mode, we set our window styles accordingly
-	if (info.fullscreen) {
+	if (info.fullscreen && info.mode == DIZ_GRAPHICS_OPENGL) {
 		dwStyle		= WS_POPUP;								//No window edge
 		dwExStyle	= WS_EX_APPWINDOW;						//Makes sure other windows are out of the way
 	}else {
@@ -383,6 +384,21 @@ bool DIZ_WINDOW::createGL() {
 
 //This function will create our Direct3D scene
 bool DIZ_WINDOW::createD3D() {
+	//Declare a HRESULT variable for error checking
+	HRESULT hr;
+
+	//Create our Direct3D device
+	hr = interface3D9->CreateDevice(	D3DADAPTER_DEFAULT,
+										D3DDEVTYPE_HAL,
+										hWnd,
+										D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+										&info.d3d,
+										&device3D9);
+	//Check for an error
+	if (FAILED(hr)) {
+		MessageBox(NULL, "Failed to create Direct3D Device.", "DiZ Startup Error", MB_OK | MB_ICONINFORMATION);
+		return false;
+	}
 
 	return true;
 }
