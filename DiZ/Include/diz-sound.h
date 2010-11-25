@@ -32,7 +32,7 @@ public:
 
 	//Declare our public functions
 	//This function creates the buffer from the file specified
-	bool load();
+	bool loadWAV();
 	//This function deletes our buffer
 	void kill();
 	//This function sets our desired filename to the specified value
@@ -93,8 +93,6 @@ public:
 	~DIZ_LISTENER();
 
 	//Declare our public functions
-	//This function will set up our ALC contexts and so on
-	void init();
 	//This function updates the Listener's settings
 	bool update();
 	//This function ends our alut session and everything
@@ -104,6 +102,10 @@ public:
 	float pos[3], vel[3], ori[6];
 
 private:
+	//Declare our private functions
+	//This function will set up our ALC contexts and so on
+	void init();
+
 	//Declare our private properties
 	//Declare our ALC Device handle
 	ALCdevice *hDevice;

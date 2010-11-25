@@ -54,7 +54,6 @@ bool DIZ_LISTENER::update() {
 
 	//Then check for errors and return accordingly
 	if (alGetError() != AL_NO_ERROR) {
-		MessageBox(NULL, "Error setting Listener values.", "Diz Sound Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}else {
 		return true;

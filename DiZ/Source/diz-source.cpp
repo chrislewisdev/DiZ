@@ -39,7 +39,6 @@ bool DIZ_SOURCE::setBuffer(ALuint buf) {
 	alSourcei(src, AL_BUFFER, buf);
 	//Check for any errors
 	if (alGetError() != AL_NO_ERROR) {
-		//MessageBox(NULL, "Error setting buffer.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}else {
 		//If everything went fine, specify that we now have a buffer
@@ -81,7 +80,6 @@ bool DIZ_SOURCE::update() {
 
 	//Check for any errors and return accordingly
 	if (alGetError() != AL_NO_ERROR) {
-		//MessageBox(NULL, "Error setting Source values.", "DiZ Sound Error", MB_OK | MB_ICONINFORMATION);
 		return false;
 	}else {
 		return true;
