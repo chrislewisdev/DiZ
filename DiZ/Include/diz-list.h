@@ -38,6 +38,8 @@ public:
 	TYPE *previousItem(int id);
 	//This function will retrieve a previous using a string ID
 	TYPE *previousItem(char id[]);
+	//This function will retrieve the first item in our list
+	TYPE *firstItem();
 	//This function will delete a specified item found by its numeric ID
 	void deleteItem(int id);
 	//This function will delete a specified item found by its char-string ID
@@ -232,6 +234,16 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::previousItem(char id[]) {
 	//Make sure it exists before returning its contents
 	if (prev != NULL) {
 		return &next->item;
+	}else {
+		return NULL;
+	}
+}
+
+//This function will retrieve the first item in our list
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::firstItem() {
+	//Just check that we have a first item, then return it if so
+	if (this->next != NULL) {
+		return &this->next->item;
 	}else {
 		return NULL;
 	}
