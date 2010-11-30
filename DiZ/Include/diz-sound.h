@@ -8,8 +8,13 @@
 #define DIZ_SOUND_H
 
 //Declare any includes we need, checking for anything already define
-#include <windows.h>		//Windows.h for general windows functions
-#include <al/alut.h>		//Alut.h- includes al.h and alc.h for us
+#include <windows.h>			//Windows.h for general windows functions
+#include <al/alut.h>			//Alut.h- includes al.h and alc.h for us
+#include <ogg/ogg.h>			//Ogg.h- for our ogg resources
+#include <vorbis/codec.h>		//Codec.h- required Vorbis header
+#include <vorbis/vorbisenc.h>	//Vorbisenc.h- Vorbis header
+#include <vorbis/vorbisfile.h>	//Vorbisfile.h- Vorbis header for Ogg file I/O
+#include <diz-list.h>			//Diz-list.h- for the DIZ_LIST class for DIZ_OGGSTREAM
 
 //This structure holds info related to an OpenAL Source
 struct DIZ_SOURCEINFO {
@@ -21,6 +26,52 @@ struct DIZ_SOURCEINFO {
 	ALint loop;
 	//And maintain a flag of whether or not our buffer's been set
 	bool buf;
+};
+
+//This structure holds info for Ogg-streaming targets
+struct DIZ_OGGSTREAMTARGET {
+	//Declare our double-buffer setup IDs
+	ALuint buffers[2];
+	//Declare a pointer to our target AL source
+	ALuint *source;
+	//Declare a variable for stream position tracking
+	int location;
+};
+
+//This class will handle Ogg-file streams to sound buffers/sources
+class DIZ_OGGSTREAM {
+public:
+	//Declare our Constructor and Destructor
+	DIZ_OGGSTREAM();
+	~DIZ_OGGSTREAM();
+
+	//Declare our public functions
+	//This function will load up a specified .ogg file
+	bool loadFile(char fname[]);
+	//This function will add a new source target to our list
+	bool addTarget(ALuint *src);
+	//This function will update our streams
+	bool update();
+	//This function will destroy our class' info
+	void kill();
+
+	//Declare a variable for buffer size for each streaming occasion
+	const int bufferSize = 4096 * 8;
+
+private:
+	//Declare our private functions
+	//This function will stream new ogg data into a specified buffer, starting from a specified position
+	bool streamToBuffer(ALuint buf, int *location);
+
+	//Declare our private properties
+	//Declare our OggVorbis file handle
+	OggVorbis_File oggFile;
+	//Declare a Vorbis Info pointer
+	vorbis_info *vorbisInfo;
+	//Declare a file-format variable
+	ALenum format;
+	//Declare our source targets list
+	DIZ_LIST<DIZ_OGGSTREAMTARGET> targets;
 };
 
 //This class contains functions and properties related to OpenAL Buffers
