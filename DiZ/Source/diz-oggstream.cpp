@@ -8,8 +8,7 @@
 
 //Declare our Constructor
 DIZ_OGGSTREAM::DIZ_OGGSTREAM() {
-	//All we really need to do is set our default buffer size
-	//bufferSize = 4096 * 8;
+	
 }
 
 //Declare our Destructor
@@ -43,9 +42,9 @@ bool DIZ_OGGSTREAM::loadFile(char fname[]) {
 }
 
 //This function will add a new source target to our stream
-bool DIZ_OGGSTREAM::addTarget(ALuint *source) {
+bool DIZ_OGGSTREAM::addTarget(ALuint source) {
 	//Declare a stream-target pointer to a new item in our list
-	DIZ_OGGSTREAMTARGET *newTarget = targets.addItem(*source);
+	DIZ_OGGSTREAMTARGET *newTarget = targets.addItem(source);
 
 	//Check that the new item succeeded
 	if (newTarget != NULL) {
@@ -65,7 +64,7 @@ bool DIZ_OGGSTREAM::addTarget(ALuint *source) {
 		}
 
 		//And finally queue up our buffers on our source ready to be played
-		alSourceQueueBuffers(*newTarget->source, 2, newTarget->buffers);
+		alSourceQueueBuffers(newTarget->source, 2, newTarget->buffers);
 	}else {
 		return false;
 	}
@@ -94,26 +93,26 @@ bool DIZ_OGGSTREAM::update() {
 	//Loop while we still have items to move through
 	while (loop && cdtr != NULL) {
 		//First retrieve our no. of processed buffers in our current source
-		alGetSourcei(*cdtr->source, AL_BUFFERS_PROCESSED, &processedBuffers);
+		alGetSourcei(cdtr->source, AL_BUFFERS_PROCESSED, &processedBuffers);
 
 		//Loop until we've replaced all the buffers
 		while (processedBuffers > 0) {
 			//Pop our finished buffers of the source queue
-			alSourceUnqueueBuffers(*cdtr->source, 1, &buf);
+			alSourceUnqueueBuffers(cdtr->source, 1, &buf);
 			//Then fill it up with new data, with a quick error check
 			if (!streamToBuffer(buf, &cdtr->location)) {
 				results = false;
 			}
 			//Then put it back on the end of the queue
-			alSourceQueueBuffers(*cdtr->source, 1, &buf);
+			alSourceQueueBuffers(cdtr->source, 1, &buf);
 
 			//Then decrement our counter
 			processedBuffers--;
 		}
 
 		//Check that we have a next item to move onto, otherwise exit our loop
-		if (targets.nextItem(*cdtr->source) != NULL) {
-			cdtr = targets.nextItem(*cdtr->source);
+		if (targets.nextItem(cdtr->source) != NULL) {
+			cdtr = targets.nextItem(cdtr->source);
 		}else {
 			loop = false;
 		}
@@ -130,13 +129,49 @@ bool DIZ_OGGSTREAM::update() {
 
 //This function will close our class' properties
 void DIZ_OGGSTREAM::kill() {
+	//Declare a conductor object set to our first item
+	DIZ_OGGSTREAMTARGET *cdtr = targets.firstItem();
+	//And declare a looping variable
+	bool loop = true;
+	//Declare a storage variable for our queued buffers
+	int queuedBuffers;
+	//Declare a storage variable for buffer-IDs
+	ALuint buf;
 
+	//Loop as long as we have items left
+	while (loop && cdtr != NULL) {
+		//Stop our target source (just in case)
+		alSourceStop(cdtr->source);
+		//Retrieve the amount of queued buffers on our source
+		alGetSourcei(cdtr->source, AL_BUFFERS_QUEUED, &queuedBuffers);
+
+		//Loop for as many buffers as we need
+		while (queuedBuffers > 0) {
+			//Unqueue our left-over buffers on this source
+			alSourceUnqueueBuffers(cdtr->source, 1, &buf);
+
+			//Then decrement our counter
+			queuedBuffers--;
+		}
+
+		//Check if we have any more items, otherwise exit our loop
+		if (targets.nextItem(cdtr->source) != NULL) {
+			cdtr = targets.nextItem(cdtr->source);
+		}else {
+			loop = false;
+		}
+	}
+
+	//Close our Ogg file
+	ov_clear(&oggFile);
+	//And then clear out our list
+	targets.kill();
 }
 
 //This function will stream new Ogg data to a specified buffer at a specified position
 bool DIZ_OGGSTREAM::streamToBuffer(ALuint buf, int *location) {
 	//Declare a stream-data buffer
-	char data[bufferSize];
+	char data[DEFAULT_BUFFER_SIZE];
 	//Declare our tracking variables for our streaming progress
 	int size = 0, result;
 	//And declare a bitstream variable
@@ -145,11 +180,11 @@ bool DIZ_OGGSTREAM::streamToBuffer(ALuint buf, int *location) {
 	//First, seek to our desired starting position in the stream
 	ov_pcm_seek(&oggFile, *location);
 	//Loop until we've filled up our desired buffer size
-	while (size < bufferSize) {
+	while (size < DEFAULT_BUFFER_SIZE) {
 		//Read as much new data as we can into the buffer
-		result = ov_read(&oggFile, data + size, bufferSize - size, 0, 2, 1, &bitstream);
+		result = ov_read(&oggFile, data + size, DEFAULT_BUFFER_SIZE - size, 0, 2, 1, &bitstream);
 		//Now set our stream-location to our current spot
-		*location = ov_pcm_tell(&oggFile);
+		*location = (int)ov_pcm_tell(&oggFile);
 		
 		//If our result was positive, it's our amount of data read
 		if (result > 0) {

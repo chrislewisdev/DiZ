@@ -16,6 +16,9 @@
 #include <vorbis/vorbisfile.h>	//Vorbisfile.h- Vorbis header for Ogg file I/O
 #include <diz-list.h>			//Diz-list.h- for the DIZ_LIST class for DIZ_OGGSTREAM
 
+//Define a quick buffer size for streaming
+#define DEFAULT_BUFFER_SIZE		(4096 * 8)
+
 //This structure holds info related to an OpenAL Source
 struct DIZ_SOURCEINFO {
 	//The position and velocity arrays of the source
@@ -33,7 +36,7 @@ struct DIZ_OGGSTREAMTARGET {
 	//Declare our double-buffer setup IDs
 	ALuint buffers[2];
 	//Declare a pointer to our target AL source
-	ALuint *source;
+	ALuint source;
 	//Declare a variable for stream position tracking
 	int location;
 };
@@ -49,14 +52,11 @@ public:
 	//This function will load up a specified .ogg file
 	bool loadFile(char fname[]);
 	//This function will add a new source target to our list
-	bool addTarget(ALuint *src);
+	bool addTarget(ALuint src);
 	//This function will update our streams
 	bool update();
 	//This function will destroy our class' info
 	void kill();
-
-	//Declare a variable for buffer size for each streaming occasion
-	const int bufferSize = 4096 * 8;
 
 private:
 	//Declare our private functions
