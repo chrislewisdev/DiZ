@@ -1,9 +1,0 @@
-/******************************************************************
-*DiZ Library by:	Chris Lewis
-Uses: OpenGL32.lib, glu32.lib, glaux.lib
-******************************************************************/
-
-This library is intended as something to help start up projects by providing quick window set-up functions and
-other relevant resources. I have plans to expand it to cover other graphics libraries like Direct3D should chances come up.
-
-Appropriate Mentions:	NeHe- my OpenGL code is largely based off the NeHe tutorials
