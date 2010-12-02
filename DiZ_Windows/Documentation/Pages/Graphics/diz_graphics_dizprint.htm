@@ -1,0 +1,55 @@
+<HTML>
+
+<HEAD>
+<META NAME="GENERATOR" Content="Microsoft Visual Studio 8.0">
+<TITLE>DiZ Documentation: DiZ Graphics- dizPrint</TITLE>
+<link rel="Stylesheet" type="text/css" href="../../Resources/layout.css" />
+</HEAD>
+
+<BODY>
+<h1>DiZ Documentation: dizPrint</h1>
+<a href="../../index.htm">Index</a> -> <a href="../diz_graphics_index.htm">DiZ Graphics</a><br /><br />
+
+<ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#declarations">Declaration</a></li>
+    <li><a href="#example">Example</a></li>
+</ul>
+<hr />
+
+<h2><a id="overview">Overview</a></h2>
+
+The <code>dizPrint</code> function is used to draw text to the screen using a specified font and message.
+
+<h2><a id="declarations">Declaration</a></h2>
+
+<pre class="code">
+//Function to draw a specified font to the screen
+void dizPrint(DIZ_FONT *font, const char *fmt, ...);
+</pre>
+
+<h4>DIZ_FONT *font</h4>
+Pointer to the font that we want to use.
+
+<h4>const char *fmt, ...</h4>
+The message that you want to display. This may be followed by formatting arguments.
+
+<h2><a id="example">Example</a></h2>
+
+The following example shows a common use of the <code>dizPrint</code> function.
+
+<pre class="code">
+    //Declare our font
+    DIZ_FONT font;
+
+    //Set up your font here//
+
+    //Position our text onscreen
+    glRasterPos2f(0.0f, 0.0f);
+
+    //Then print our message
+	dizPrint(&font, "Hello World!");
+</pre>
+</BODY>
+
+</HTML>
