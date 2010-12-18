@@ -15,6 +15,9 @@ DIZ_TEXTURE::DIZ_TEXTURE() {
 	//And set our filters to the default LINEAR setting
 	minFilter = GL_LINEAR;
 	magFilter = GL_LINEAR;
+
+	//Generate some space in memory for our specific texture handle
+	glGenTextures(1, &tex);
 }
 
 //Define our destructor- doesn't really need to do anything in this case
@@ -32,9 +35,6 @@ bool DIZ_TEXTURE::load() {
 	if (img) {
 		//First set status to true to indicate we've successfully loaded the texture
 		status = true;
-
-		//Generate some space in memory for our specific texture handle
-		glGenTextures(1, &tex);
 
 		//Bind our newly generated texture for use
 		glBindTexture(GL_TEXTURE_2D, tex);

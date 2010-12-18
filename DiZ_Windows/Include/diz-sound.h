@@ -8,13 +8,13 @@
 #define DIZ_SOUND_H
 
 //Declare any includes we need, checking for anything already define
-#include <windows.h>			//Windows.h for general windows functions
-#include <al/alut.h>			//Alut.h- includes al.h and alc.h for us
-#include <ogg/ogg.h>			//Ogg.h- for our ogg resources
-#include <vorbis/codec.h>		//Codec.h- required Vorbis header
-#include <vorbis/vorbisenc.h>	//Vorbisenc.h- Vorbis header
-#include <vorbis/vorbisfile.h>	//Vorbisfile.h- Vorbis header for Ogg file I/O
-#include <diz-list.h>			//Diz-list.h- for the DIZ_LIST class for DIZ_OGGSTREAM
+#include "../Include/diz-list.h"	//Diz-list.h for our linked list class
+#include <windows.h>				//Windows.h for general windows functions
+#include <al/alut.h>				//Alut.h- includes al.h and alc.h for us
+#include <ogg/ogg.h>				//Ogg.h- for our ogg resources
+#include <vorbis/codec.h>			//Codec.h- required Vorbis header
+#include <vorbis/vorbisenc.h>		//Vorbisenc.h- Vorbis header
+#include <vorbis/vorbisfile.h>		//Vorbisfile.h- Vorbis header for Ogg file I/O
 
 //Define a quick buffer size for streaming
 #define DEFAULT_BUFFER_SIZE		(4096 * 8)
