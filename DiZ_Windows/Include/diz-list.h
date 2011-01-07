@@ -30,16 +30,8 @@ public:
 	TYPE *getItem(int id);
 	//This function will retrieve an item by its char-string ID
 	TYPE *getItem(char id[]);
-	//This function will retrieve a successive item from an item located by its numeric ID
-	TYPE *nextItem(int id);
-	//This function will retrieve a successive item, using a string ID
-	TYPE *nextItem(char id[]);
-	//This function will retrieve a previous item from an item located by its numeric ID
-	TYPE *previousItem(int id);
-	//This function will retrieve a previous using a string ID
-	TYPE *previousItem(char id[]);
-	//This function will retrieve the first item in our list
-	TYPE *firstItem();
+	//This function will assist in iteration through our list
+	TYPE *iterate(bool start);
 	//This function will delete a specified item found by its numeric ID
 	void deleteItem(int id);
 	//This function will delete a specified item found by its char-string ID
@@ -75,6 +67,8 @@ private:
 	//Declare our private properties
 	//Declare our ordered ID number for each item
 	int id;
+	//Declare an iteration counter for iterate()
+	int iterator;
 	//Declare our item contents of our specified TYPE
 	TYPE item;
 	//Declare our next item in our list
@@ -95,6 +89,7 @@ template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
 	id = 0;
 	next = NULL;
 	numItems = 0;
+	iterator = 1;
 }
 
 //Declare our Destructor
@@ -180,73 +175,19 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::getItem(char id[]) {
 	}
 }
 
-//This function will retrieve an item's successor with a numeric ID
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::nextItem(int id) {
-	//Create a conductor variable set to our desired item
-	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
-	DIZ_LIST<TYPE> *next = cdtr->next;
-
-	//Make sure it exists before returning its contents
-	if (next != NULL) {
-		return &next->item;
-	}else {
-		return NULL;
+//This function will assist in iteration through our list
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::iterate(bool start) {
+	//Check if we want to start a new iteration- if so, set our ID back to 1
+	if (start) {
+		iterator = 1;
 	}
-}
 
-//This function will retrieve an item's successor using a string ID
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::nextItem(char id[]) {
-	//Create a conductor variable set to our desired item
-	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
-	//Retrieve our next item
-	DIZ_LIST<TYPE> *next = cdtr->next;
+	//Attempt to retrieve our current desired item and increment our iterator
+	TYPE *cdtr = getOrderedItem(iterator);
+	iterator++;
 
-	//Make sure it exists before returning its contents
-	if (next != NULL) {
-		return &next->item;
-	}else {
-		return NULL;
-	}
-}
-
-//This function will retrieve an item's previous one with its numeric ID
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::previousItem(int id) {
-	//Create a conductor variable set to our desired item
-	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
-	//Retrieve our previous item
-	DIZ_LIST<TYPE> *prev = getOrderedItem(cdtr->id - 1);
-
-	//Make sure it exists before returning its contents
-	if (prev != NULL) {
-		return &next->item;
-	}else {
-		return NULL;
-	}
-}
-
-//This function will retrieve a previous item from the original's string ID
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::previousItem(char id[]) {
-	//Create a conductor variable set to our desired item
-	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
-	//Retrieve our previous item
-	DIZ_LIST<TYPE> *prev = getOrderedItem(cdtr->id - 1);
-
-	//Make sure it exists before returning its contents
-	if (prev != NULL) {
-		return &next->item;
-	}else {
-		return NULL;
-	}
-}
-
-//This function will retrieve the first item in our list
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::firstItem() {
-	//Just check that we have a first item, then return it if so
-	if (this->next != NULL) {
-		return &this->next->item;
-	}else {
-		return NULL;
-	}
+	//Then return our result
+	return cdtr;
 }
 
 //This function will delete a specified item, found by its numeric ID
