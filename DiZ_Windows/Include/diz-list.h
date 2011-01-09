@@ -180,14 +180,13 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::iterate(bool start) {
 	//Check if we want to start a new iteration- if so, set our ID back to 1
 	if (start) {
 		iterator = 1;
+	}else {
+		//And if not, increment our counter
+		iterator++;
 	}
 
-	//Attempt to retrieve our current desired item and increment our iterator
-	TYPE *cdtr = getOrderedItem(iterator);
-	iterator++;
-
-	//Then return our result
-	return cdtr;
+	//Then return our searched result
+	return &getOrderedItem(iterator)->item;
 }
 
 //This function will delete a specified item, found by its numeric ID

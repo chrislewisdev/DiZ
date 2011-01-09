@@ -80,7 +80,7 @@ bool DIZ_OGGSTREAM::addTarget(ALuint source) {
 //This function will update our streams
 bool DIZ_OGGSTREAM::update() {
 	//Declare a conductor variable set our first target item
-	DIZ_OGGSTREAMTARGET *cdtr = targets.firstItem();
+	DIZ_OGGSTREAMTARGET *cdtr = targets.iterate(true);
 	//And declare a looping variable
 	bool loop = true;
 	//Declare a storage variable for no. of processed buffers in each source
@@ -111,9 +111,8 @@ bool DIZ_OGGSTREAM::update() {
 		}
 
 		//Check that we have a next item to move onto, otherwise exit our loop
-		if (targets.nextItem(cdtr->source) != NULL) {
-			cdtr = targets.nextItem(cdtr->source);
-		}else {
+		cdtr = targets.iterate(false);
+		if (cdtr == NULL) {
 			loop = false;
 		}
 	}
@@ -130,7 +129,7 @@ bool DIZ_OGGSTREAM::update() {
 //This function will close our class' properties
 void DIZ_OGGSTREAM::kill() {
 	//Declare a conductor object set to our first item
-	DIZ_OGGSTREAMTARGET *cdtr = targets.firstItem();
+	DIZ_OGGSTREAMTARGET *cdtr = targets.iterate(true);
 	//And declare a looping variable
 	bool loop = true;
 	//Declare a storage variable for our queued buffers
@@ -155,9 +154,8 @@ void DIZ_OGGSTREAM::kill() {
 		}
 
 		//Check if we have any more items, otherwise exit our loop
-		if (targets.nextItem(cdtr->source) != NULL) {
-			cdtr = targets.nextItem(cdtr->source);
-		}else {
+		cdtr = targets.iterate(false);
+		if (cdtr == NULL) {
 			loop = false;
 		}
 	}
