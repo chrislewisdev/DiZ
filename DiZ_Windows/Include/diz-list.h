@@ -186,7 +186,11 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::iterate(bool start) {
 	}
 
 	//Then return our searched result
-	return &getOrderedItem(iterator)->item;
+	if (getOrderedItem(iterator) != NULL) {
+		return &getOrderedItem(iterator)->item;
+	}else {
+		return NULL;
+	}
 }
 
 //This function will delete a specified item, found by its numeric ID
