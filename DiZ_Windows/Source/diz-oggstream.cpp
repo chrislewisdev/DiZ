@@ -44,7 +44,7 @@ bool DIZ_OGGSTREAM::loadFile(char fname[]) {
 //This function will add a new source target to our stream
 bool DIZ_OGGSTREAM::addTarget(ALuint source) {
 	//Declare a stream-target pointer to a new item in our list
-	DIZ_OGGSTREAMTARGET *newTarget = targets.addItem(source);
+	DIZ_OGGSTREAMTARGET *newTarget = targets.addItem();
 
 	//Check that the new item succeeded
 	if (newTarget != NULL) {
@@ -81,8 +81,6 @@ bool DIZ_OGGSTREAM::addTarget(ALuint source) {
 bool DIZ_OGGSTREAM::update() {
 	//Declare a conductor variable set our first target item
 	DIZ_OGGSTREAMTARGET *cdtr = targets.iterate(true);
-	//And declare a looping variable
-	bool loop = true;
 	//Declare a storage variable for no. of processed buffers in each source
 	int processedBuffers;
 	//Declare a buffer-ID storage variable
@@ -91,7 +89,7 @@ bool DIZ_OGGSTREAM::update() {
 	bool results = true;
 
 	//Loop while we still have items to move through
-	while (loop && cdtr != NULL) {
+	while (cdtr) {
 		//First retrieve our no. of processed buffers in our current source
 		alGetSourcei(cdtr->source, AL_BUFFERS_PROCESSED, &processedBuffers);
 
@@ -112,9 +110,6 @@ bool DIZ_OGGSTREAM::update() {
 
 		//Check that we have a next item to move onto, otherwise exit our loop
 		cdtr = targets.iterate(false);
-		if (cdtr == NULL) {
-			loop = false;
-		}
 	}
 
 	//Finally, check for any OpenAL errors
@@ -130,15 +125,13 @@ bool DIZ_OGGSTREAM::update() {
 void DIZ_OGGSTREAM::kill() {
 	//Declare a conductor object set to our first item
 	DIZ_OGGSTREAMTARGET *cdtr = targets.iterate(true);
-	//And declare a looping variable
-	bool loop = true;
 	//Declare a storage variable for our queued buffers
 	int queuedBuffers;
 	//Declare a storage variable for buffer-IDs
 	ALuint buf;
 
 	//Loop as long as we have items left
-	while (loop && cdtr != NULL) {
+	while (cdtr) {
 		//Stop our target source (just in case)
 		alSourceStop(cdtr->source);
 		//Retrieve the amount of queued buffers on our source
@@ -155,9 +148,6 @@ void DIZ_OGGSTREAM::kill() {
 
 		//Check if we have any more items, otherwise exit our loop
 		cdtr = targets.iterate(false);
-		if (cdtr == NULL) {
-			loop = false;
-		}
 	}
 
 	//Close our Ogg file

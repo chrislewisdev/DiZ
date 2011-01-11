@@ -21,7 +21,7 @@ public:
 
 	//Declare our public functions
 	//This function will add a new item to our list, with an integer ID
-	TYPE *addItem(int id);
+	TYPE *addItem();
 	//This function will add a new item with a char-string ID
 	TYPE *addItem(char id[]);
 	//This function will add a new item's contents with both types of IDs
@@ -42,19 +42,15 @@ public:
 	void kill();
 
 	//Declare our public properties
-	//Declare our external numeric ID
-	int exId;
 	//Declare our external char-string ID
 	char strId[256];
 
 private:
 	//Declare our private functions
 	//This function will add a new item our list
-	DIZ_LIST<TYPE> *addItem();
+	DIZ_LIST<TYPE> *addNewItem();
 	//This function will retrieve an item by its ordered ID
 	DIZ_LIST<TYPE> *getOrderedItem(int id);
-	//This function will retrieve an item by its numeric ID
-	DIZ_LIST<TYPE> *getIDItem(int id);
 	//This function will retrieve an item by its string ID
 	DIZ_LIST<TYPE> *getIDItem(char id[]);
 	//This function will delete a specified DIZ_LIST item
@@ -84,7 +80,6 @@ template <class TYPE> int DIZ_LIST<TYPE>::numItems;
 //Declare our Constructor
 template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
 	//Set all our values to safe defaults
-	exId = 0;
 	strId[0] = '\0';
 	id = 0;
 	next = NULL;
@@ -98,12 +93,9 @@ template <class TYPE> DIZ_LIST<TYPE>::~DIZ_LIST() {
 }
 
 //This function will add a new item, setting its numeric ID
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem(int id) {
+template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem() {
 	//Declare our conductor variable and set it to our added item
-	DIZ_LIST<TYPE> *cdtr = addItem();
-
-	//Assign it our ID value
-	cdtr->exId = id;
+	DIZ_LIST<TYPE> *cdtr = addNewItem();
 
 	//Then return the item
 	return &cdtr->item;
@@ -112,7 +104,7 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem(int id) {
 //This function will add a new item, setting its string ID
 template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem(char id[]) {
 	//Declare our conductor variable and set it to our new item
-	DIZ_LIST<TYPE> *cdtr = addItem();
+	DIZ_LIST<TYPE> *cdtr = addNewItem();
 	//Declare an iterative variable
 	int i = 0;
 
@@ -128,31 +120,10 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem(char id[]) {
 	return &cdtr->item;
 }
 
-//This function will add a new item, setting both its numeric and string IDs
-template <class TYPE> TYPE *DIZ_LIST<TYPE>::addItem(int id, char strId[]) {
-	//Declare our conductor variable and set it to our new item
-	DIZ_LIST<TYPE> *cdtr = addItem();
-	//Declare an iterative variable
-	int i = 0;
-
-	//And set our numeric ID to the specified value
-	cdtr->exId = id;
-	//And loop through our externally-assigned ID to assign it to our item's ID
-	while (strId[i] != '\0') {
-		cdtr->strId[i] = strId[i];
-		i++;
-	}
-	//Then null-terminate the string ID
-	cdtr->strId[i] = '\0';
-
-	//Now return our newly created item
-	return &cdtr->item;
-}
-
 //This function will retrieve a specified item by its numeric ID
 template <class TYPE> TYPE *DIZ_LIST<TYPE>::getItem(int id) {
 	//Create a conductor variable set to our desired item
-	DIZ_LIST<TYPE> *cdtr = getIDItem(id);
+	DIZ_LIST<TYPE> *cdtr = getOrderedItem(id);
 
 	//Make sure it exists before returning its contents
 	if (cdtr != NULL) {
@@ -196,14 +167,10 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::iterate(bool start) {
 //This function will delete a specified item, found by its numeric ID
 template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(int id) {
 	//Create our target handle for searching for our ID
-	DIZ_LIST<TYPE> *cdtr = this;
+	DIZ_LIST<TYPE> *cdtr = getOrderedItem(id);
 
-	//Loop as long as there are any items left and we haven't found our ID
-	while (cdtr != NULL && cdtr->exId != id) {
-		cdtr = cdtr->next;
-	}
 	//Make sure we found our target properly- if we did, go ahead and delete it
-	if (cdtr != NULL && cdtr->exId == id) {
+	if (cdtr != NULL) {
 		deleteItem(cdtr, true);
 	}
 }
@@ -237,7 +204,7 @@ template <class TYPE> void DIZ_LIST<TYPE>::kill() {
 }
 
 //This function will add a new item onto our list
-template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::addItem() {
+template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::addNewItem() {
 	//Declare our conductor variable, starting at our base item
 	DIZ_LIST<TYPE> *cdtr = this;
 	//Declare storage for a temporary ID value
@@ -273,25 +240,6 @@ template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::getOrderedItem(int id) {
 	}
 	//Once we've hit the end, check if we've found our desired ID- if we do, return it
 	if (cdtr != NULL && cdtr->id == id) {
-		return cdtr;
-	}else {
-		//Otherwise, return NULL as no result
-		return NULL;
-	}
-}
-
-//This function wil retrieve an item by its numeric ID
-template <class TYPE> DIZ_LIST<TYPE> *DIZ_LIST<TYPE>::getIDItem(int id) {
-	//Create a conductor variable set to our base item
-	DIZ_LIST<TYPE> *cdtr = this;
-
-	//Loop as long as there are any items left and we haven't found our ID
-	while (cdtr != NULL && cdtr->exId != id) {
-		cdtr = cdtr->next;
-	}
-	//Once we're here, check if we have our desired ID or not
-	if (cdtr != NULL && cdtr->exId == id) {
-		//If we do, return it
 		return cdtr;
 	}else {
 		//Otherwise, return NULL as no result
