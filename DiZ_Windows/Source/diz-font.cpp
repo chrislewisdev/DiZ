@@ -70,6 +70,9 @@ bool DIZ_FONT::load() {
 							32,			//Starting character we want to use
 							96,			//How many characters to create
 							base);		//Start point of our display lists
+
+		//Since this font type doesn't retrieve glyph metrics, it can be handy to retrieve some character info anyway
+		GetCharWidth32(*hDC, 0, 255, info.charWidths);
 	}else if (info.type == DIZ_FONT_OUTLINE) {
 		//Or if we want an Outline font, create that
 		wglUseFontOutlines(	*hDC,				//Device Context to get the font from

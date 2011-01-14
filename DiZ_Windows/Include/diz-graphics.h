@@ -76,6 +76,8 @@ struct DIZ_FONTINFO {
 	float deviation, thickness;
 	//Type of outline- typically WGL_FONT_POLYGONS or WGL_FONT_LINES
 	int outlineType;
+	//And declare a char-width array for Bitmap metrics
+	int charWidths[256];
 };
 
 //This class handles all window functions and properties

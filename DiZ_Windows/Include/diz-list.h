@@ -75,7 +75,7 @@ private:
 };
 
 //Declare our static variable
-template <class TYPE> int DIZ_LIST<TYPE>::numItems;
+template <class TYPE> int DIZ_LIST<TYPE>::numItems = 0;
 
 //Declare our Constructor
 template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
@@ -83,7 +83,6 @@ template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
 	strId[0] = '\0';
 	id = 0;
 	next = NULL;
-	numItems = 0;
 	iterator = 1;
 }
 
