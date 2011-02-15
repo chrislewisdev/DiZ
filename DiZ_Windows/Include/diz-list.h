@@ -149,7 +149,7 @@ template <class TYPE> TYPE *DIZ_LIST<TYPE>::getItem(char id[]) {
 template <class TYPE> TYPE *DIZ_LIST<TYPE>::iterate(bool start) {
 	//Check if we want to start a new iteration- if so, set our ID back to 1
 	if (start) {
-		iterator = 0;
+		iterator = 1;
 	}else {
 		//And if not, increment our counter
 		iterator++;
