@@ -13,6 +13,7 @@
 #include <gl/gl.h>			//Gl.h- used for our main OpenGL functions
 #include <gl/glu.h>			//Glu.h- used for various extra OpenGL functionalities
 #include <gl/glaux.h>		//Glaux.h- used mainly for image loading
+#include <gl/wglext.h>		//Wglext.h- for WGL extensions
 #include <d3d9.h>			//D3D9.h- provides Direct3D9 functions
 #include <stdio.h>			//Stdio.h- used mainly for texture loading
 

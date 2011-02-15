@@ -84,6 +84,7 @@ bool DIZ_FONT::load() {
 							info.outlineType,	//Type of outline to create
 							gmf);				//GMF info array
 	}
+
 	//Now that we're done, set the Device's font back to whatever it was before
 	SelectObject(*hDC, oldFont);
 	//Then delete the object we created
