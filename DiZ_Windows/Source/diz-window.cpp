@@ -16,38 +16,12 @@ DIZ_WINDOW::DIZ_WINDOW() {
 	info.fullscreen	= false;
 	info.menu		= false;
 	info.showCursor	= true;
-	info.mode		= DIZ_GRAPHICS_OPENGL;
 	info.wndProc	= NULL;
 
 	//Initialise our OpenGL settings
 	info.gl.mode	= DIZ_3D;
 	info.gl.zNear	= 0.1f;
 	info.gl.zFar	= 100.0f;
-
-	//Create our D3D interface and then initialise our settings
-	interface3D9 = Direct3DCreate9(D3D_SDK_VERSION);
-
-	//Clear out our settings
-	ZeroMemory(&info.d3d, sizeof(D3DPRESENT_PARAMETERS));
-
-	//Back Buffer Count and Format
-	info.d3d.BackBufferCount			= 1;
-	info.d3d.BackBufferFormat			= D3DFMT_R5G6B5;
-	//Multisampling Settings
-	info.d3d.MultiSampleType			= D3DMULTISAMPLE_NONE;
-	info.d3d.MultiSampleQuality			= 0;
-	//Buffer-Swap Setting
-	info.d3d.SwapEffect					= D3DSWAPEFFECT_DISCARD;
-	//No specific flags
-	info.d3d.Flags						= 0;
-	//Set our Refresh Rate settings
-	info.d3d.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;
-	info.d3d.PresentationInterval		= D3DPRESENT_INTERVAL_DEFAULT;
-	//Set our Depth Buffer settings
-	info.d3d.EnableAutoDepthStencil		= true;
-	info.d3d.AutoDepthStencilFormat		= D3DFMT_D16_LOCKABLE;
-	//Set fullscreen settings
-	info.d3d.Windowed					= true;
 }
 
 //Define our Deconstructor
@@ -118,12 +92,8 @@ void DIZ_WINDOW::killWindow() {
 		ShowCursor(true);
 	}
 
-	//Perform our kill routine according to which graphics mode we're in
-	if (info.mode == DIZ_GRAPHICS_OPENGL) {
-		killGL();
-	}else if (info.mode == DIZ_GRAPHICS_DIRECT3D9) {
-		killD3D();
-	}
+	//Perform our kill routine
+	killGL();
 
 	//Finally, destroy the actual window and make sure nothing went wrong
 	if (hWnd && !DestroyWindow(hWnd)) {
@@ -168,12 +138,6 @@ void DIZ_WINDOW::killGL() {
 	}
 }
 
-//This function destroys our Direct3D scene
-void DIZ_WINDOW::killD3D() {
-	//Release our interface
-	interface3D9->Release();
-}
-
 //This function creates the window according to our info
 bool DIZ_WINDOW::createWindow() {
 	//Declare our window Style holders
@@ -208,7 +172,7 @@ bool DIZ_WINDOW::createWindow() {
 	}
 
 	//And check if we want to go fullscreen
-	if (info.fullscreen && info.mode == DIZ_GRAPHICS_OPENGL) {
+	if (info.fullscreen) {
 		//Declare our DEVMODE structure for screen settings
 		DEVMODE dwSettings;
 		//Clear it out
@@ -243,7 +207,7 @@ bool DIZ_WINDOW::createWindow() {
 	}
 
 	//Depending on whether or not we're still in fullscreen mode, we set our window styles accordingly
-	if (info.fullscreen && info.mode == DIZ_GRAPHICS_OPENGL) {
+	if (info.fullscreen) {
 		dwStyle		= WS_POPUP;								//No window edge
 		dwExStyle	= WS_EX_APPWINDOW;						//Makes sure other windows are out of the way
 	}else {
@@ -280,16 +244,9 @@ bool DIZ_WINDOW::createWindow() {
 		return false;
 	}
 
-	//Now create our graphics scene according to our specified one
-	if (info.mode == DIZ_GRAPHICS_OPENGL) {
-		//Check for any errors with our OpenGL creation
-		if (!createGL()) {
-			return false;
-		}
-	}else if (info.mode == DIZ_GRAPHICS_DIRECT3D9) {
-		if (!createD3D()) {
-			return false;
-		}
+	//Check for any errors with our OpenGL creation
+	if (!createGL()) {
+		return false;
 	}
 
 	//Now we set our window to be shown
@@ -379,26 +336,5 @@ bool DIZ_WINDOW::createGL() {
 	}
 
 	//Then exit
-	return true;
-}
-
-//This function will create our Direct3D scene
-bool DIZ_WINDOW::createD3D() {
-	//Declare a HRESULT variable for error checking
-	HRESULT hr;
-
-	//Create our Direct3D device
-	hr = interface3D9->CreateDevice(	D3DADAPTER_DEFAULT,
-										D3DDEVTYPE_HAL,
-										hWnd,
-										D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-										&info.d3d,
-										&device3D9);
-	//Check for an error
-	if (FAILED(hr)) {
-		MessageBox(NULL, "Failed to create Direct3D Device.", "DiZ Startup Error", MB_OK | MB_ICONINFORMATION);
-		return false;
-	}
-
 	return true;
 }

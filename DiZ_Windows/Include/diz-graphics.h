@@ -14,7 +14,6 @@
 #include <gl/glu.h>			//Glu.h- used for various extra OpenGL functionalities
 #include <gl/glaux.h>		//Glaux.h- used mainly for image loading
 #include <gl/wglext.h>		//Wglext.h- for WGL extensions
-#include <d3d9.h>			//D3D9.h- provides Direct3D9 functions
 #include <stdio.h>			//Stdio.h- used mainly for texture loading
 
 //Define some constants that we would like to be used
@@ -23,9 +22,6 @@
 
 #define		DIZ_FONT_BITMAP			2		//This indicates the use of a Bitmap Font
 #define		DIZ_FONT_OUTLINE		3		//This indicates the use of an Outline font
-
-#define		DIZ_GRAPHICS_OPENGL		4		//This indicates an OpenGL graphics mode
-#define		DIZ_GRAPHICS_DIRECT3D9	5		//This indicates Direct3D9 graphics mode
 
 //This structure will hold OpenGL info for a window
 struct DIZ_INFO_GL {
@@ -41,12 +37,8 @@ struct DIZ_WNDINFO {
 	char *title;
 	//The width, height, and colour bits for our window
 	int width, height, bits;
-	//The graphics mode of our window- OPENGL or DIRECT3D9
-	int mode;
 	//Our OpenGL settings
 	DIZ_INFO_GL gl;
-	//Our Direct3D settings
-	D3DPRESENT_PARAMETERS d3d;
 	//Some flags to indicate whether we want a fullscreen window, a menu, etc.
 	bool fullscreen, showCursor, menu;
 	//A pointer to our window procedure for handling messages
@@ -108,10 +100,6 @@ public:
 	HWND hWnd;
 	//Declare a handle for our application instance
 	HINSTANCE hInstance;
-	//Declare a Direct3D Interface
-	IDirect3D9 *interface3D9;
-	//Declare a Direct3D Device
-	IDirect3DDevice9 *device3D9;
 
 private:
 	//Declare our private functions
@@ -119,10 +107,6 @@ private:
 	bool createGL();
 	//This function destroys our OpenGL scene
 	void killGL();
-	//This function creates our Direct3D scene
-	bool createD3D();
-	//This function destroys our Direct3D scene
-	void killD3D();
 };
 
 //This class is used to handle loading and properties of textures
