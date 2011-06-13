@@ -24,6 +24,8 @@ public:
 	//Declare functions to return next/previous items
 	DIZ_LISTITEM<TYPE> *nextItem();
 	DIZ_LISTITEM<TYPE> *previousItem();
+	//Declare a function to delete this node
+	void kill();
 
 	//Declare our public properties
 	//Declare an ID value
@@ -52,15 +54,21 @@ template <class TYPE> DIZ_LISTITEM<TYPE>::~DIZ_LISTITEM()
 }
 
 //This function will return our next item in the list
-template <class TYPE> DIZ_LISTITEM<TYPE>::nextItem()
+template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LISTITEM<TYPE>::nextItem()
 {
 	return next;
 }
 
 //This function will return our previous item in the list
-template <class TYPE> DIZ_LISTITEM<TYPE>::previousItem()
+template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LISTITEM<TYPE>::previousItem()
 {
 	return prev;
+}
+
+//This function will delete this particular node
+template <class TYPE> void DIZ_LISTITEM<TYPE>::kill()
+{
+
 }
 
 #endif
