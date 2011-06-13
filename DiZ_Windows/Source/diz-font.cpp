@@ -43,7 +43,7 @@ bool DIZ_FONT::load() {
 	HFONT font, oldFont;
 
 	//Generate display lists for our font starting with our base value
-	base = glGenLists(96);
+	base = glGenLists(255);
 
 	//Create a new font using our specified font info
 	font = CreateFont(	info.height,
@@ -101,7 +101,7 @@ void DIZ_FONT::kill() {
 		//Bitmap fonts only have 96 characters, so we delete that
 		glDeleteLists(base, 96);
 	}else if (info.type == DIZ_FONT_OUTLINE) {
-		//Whereas Outline fonts have 256
-		glDeleteLists(base, 256);
+		//Whereas Outline fonts have 255
+		glDeleteLists(base, 255);
 	}
 }

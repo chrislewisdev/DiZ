@@ -36,7 +36,7 @@ void DIZ_WINDOW::resizeGL() {
 		info.height = 1;
 	}
 
-	//Set our OpenGL viewport to the corrext size
+	//Set our OpenGL viewport to the correct size
 	glViewport(0, 0, info.width, info.height);
 
 	//Select the PROJECTION matrix and reset it
@@ -65,7 +65,7 @@ bool DIZ_WINDOW::initGL() {
 	//Set our colour to clear the screen to
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	//Set our depth value for depth clearing- about the one function I don't quite get in here
+	//Set our depth value to clear to
 	glClearDepth(1.0f);
 	//Check if we want 3D projection again
 	if (info.gl.mode == DIZ_3D) {

@@ -32,22 +32,22 @@ AUX_RGBImageRec *LoadBMP(char *fname) {
 }
 
 //This function outputs text to the screen of a specified font
-void dizPrint(DIZ_FONT *font, const char *fmt, ...) {
+void dizPrint(DIZ_FONT *font, const char *format, ...) {
 	//Declare a buffer for our output text
 	char text[256];
 	//Declare a handle for our argument list
-	va_list ap;
+	va_list argList;
 
 	//Double-check that we have an actual string to output
-	if (fmt == NULL) {
+	if (format == NULL) {
 		return;
 	}
 
 	//Start up our variable argument functions
-	va_start(ap, fmt);
+	va_start(argList, format);
 		//Use our argument list to format our string into our text[] array
-		vsprintf_s(text, sizeof(text), fmt, ap);
-	va_end(ap);
+		vsprintf_s(text, sizeof(text), format, argList);
+	va_end(argList);
 
 	//Push out our List attribute to prevent it interfering with anything else
 	glPushAttrib(GL_LIST_BIT);
