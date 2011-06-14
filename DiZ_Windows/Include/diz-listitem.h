@@ -24,14 +24,13 @@ public:
 	//Declare functions to return next/previous items
 	DIZ_LISTITEM<TYPE> *nextItem();
 	DIZ_LISTITEM<TYPE> *previousItem();
+	//These functions will set our int or string IDs
+	void setID(int id);
+	void setID(char id[]);
 	//Declare a function to delete this node
 	void kill();
 
 	//Declare our public properties
-	//Declare an ID value
-	int ID;
-	//Declare a string-ID
-	char strID[256];
 	//Declare our contained item
 	TYPE item;
 
@@ -41,14 +40,29 @@ private:
 	DIZ_LISTITEM<TYPE> *next;
 	DIZ_LISTITEM<TYPE> *prev;
 
+	//Declare private properties
+	//Declare an ID value
+	int ID;
+	//Declare a string-ID
+	char strID[256];
+
+	//Declare a static item counter
+	static int total;
+
+	//Declare DIZ_LIST a friend class
 	template <class TYPE> friend class DIZ_LIST;
 };
+
+//Initialise our total items counter
+template <class TYPE> int DIZ_LISTITEM<TYPE>::total = 0;
 
 //Define our Constructor
 template <class TYPE> DIZ_LISTITEM<TYPE>::DIZ_LISTITEM(DIZ_LISTITEM<TYPE> *_prev, DIZ_LISTITEM<TYPE> *_next)
 {
 	ID = 0;
+	strID[0] = '\0';
 	next = _next; prev = _prev;
+	total++;
 }
 
 //Define our Destructor
@@ -69,6 +83,18 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LISTITEM<TYPE>::previousItem()
 	return prev;
 }
 
+//This function will set the item's integer ID
+template <class TYPE> void DIZ_LISTITEM<TYPE>::setID(int id)
+{
+	ID = id;
+}
+
+//This function will set the item's string-ID
+template <class TYPE> void DIZ_LISTITEM<TYPE>::setID(char id[])
+{
+	strncpy(strID, id, strlen(id));
+}
+
 //This function will delete this particular node
 template <class TYPE> void DIZ_LISTITEM<TYPE>::kill()
 {
@@ -81,6 +107,8 @@ template <class TYPE> void DIZ_LISTITEM<TYPE>::kill()
 	{
 		next->prev = prev;
 	}
+
+	total--;
 
 	//Then delete this node
 	delete this;

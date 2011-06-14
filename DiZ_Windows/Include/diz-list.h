@@ -142,26 +142,14 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LIST<TYPE>::getItem(char id[])
 //This function will return the no. of elements in the list
 template <class TYPE> int DIZ_LIST<TYPE>::count()
 {
-	//Declare a conductor variable and counter variable
-	DIZ_LISTITEM<TYPE> *cdtr = root;
-	int counter = 1;
-	
-	//If we have no nodes, return 0
-	if (!cdtr)
+	//Return an appropriate total value
+	if (root)
 	{
-		return 0;
+		return root->total;
 	}
 	else
 	{
-		//Otherwise, loop through our list and count the items
-		while (cdtr->nextItem())
-		{
-			cdtr = cdtr->nextItem();
-			counter++;
-		}
-
-		//Then return the count
-		return counter;
+		return 0;
 	}
 }
 
