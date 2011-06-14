@@ -17,7 +17,7 @@ template <class TYPE> class DIZ_LISTITEM
 {
 public:
 	//Declare our Constructor and Destructor
-	DIZ_LISTITEM();
+	DIZ_LISTITEM(DIZ_LISTITEM<TYPE> *_prev, DIZ_LISTITEM<TYPE> *_next);
 	~DIZ_LISTITEM();
 
 	//Declare our public functions
@@ -29,7 +29,9 @@ public:
 
 	//Declare our public properties
 	//Declare an ID value
-	int id;
+	int ID;
+	//Declare a string-ID
+	char strID[256];
 	//Declare our contained item
 	TYPE item;
 
@@ -38,13 +40,15 @@ private:
 	//Declare next and previous pointer
 	DIZ_LISTITEM<TYPE> *next;
 	DIZ_LISTITEM<TYPE> *prev;
+
+	template <class TYPE> friend class DIZ_LIST;
 };
 
 //Define our Constructor
-template <class TYPE> DIZ_LISTITEM<TYPE>::DIZ_LISTITEM()
+template <class TYPE> DIZ_LISTITEM<TYPE>::DIZ_LISTITEM(DIZ_LISTITEM<TYPE> *_prev, DIZ_LISTITEM<TYPE> *_next)
 {
-	id = 0;
-	next = NULL; prev = NULL;
+	ID = 0;
+	next = _next; prev = _prev;
 }
 
 //Define our Destructor
@@ -68,7 +72,18 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LISTITEM<TYPE>::previousItem()
 //This function will delete this particular node
 template <class TYPE> void DIZ_LISTITEM<TYPE>::kill()
 {
+	//Start off changing our next and previous' connections (where necessary)
+	if (prev)
+	{
+		prev->next = next;
+	}
+	if (next) 
+	{
+		next->prev = prev;
+	}
 
+	//Then delete this node
+	delete this;
 }
 
 #endif
