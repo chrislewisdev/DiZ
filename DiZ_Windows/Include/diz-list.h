@@ -66,7 +66,7 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LIST<TYPE>::addItem(int id)
 {
 	//Retrieve a newly added item, set its ID, and return it
 	DIZ_LISTITEM<TYPE> *newItem = addNewItem();
-	newItem->ID = id;
+	newItem->setID(id);
 
 	return newItem;
 }
@@ -76,7 +76,7 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LIST<TYPE>::addItem(char id[])
 {
 	//Retrieve a newly added item, set its ID with strncpy, and return it
 	DIZ_LISTITEM<TYPE> *newItem = addNewItem();
-	strncpy(newItem->strID, id, strlen(id));
+	newItem->setID(id);
 
 	return newItem;
 }
@@ -204,7 +204,7 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LIST<TYPE>::addNewItem()
 	//Then create our new item and return it
 	*target = new DIZ_LISTITEM<TYPE>(cdtr, NULL);
 
-	return cdtr;
+	return *target;
 }
 
 #endif

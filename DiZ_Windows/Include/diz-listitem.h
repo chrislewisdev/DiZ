@@ -92,7 +92,7 @@ template <class TYPE> void DIZ_LISTITEM<TYPE>::setID(int id)
 //This function will set the item's string-ID
 template <class TYPE> void DIZ_LISTITEM<TYPE>::setID(char id[])
 {
-	strncpy(strID, id, strlen(id));
+	strncpy_s(strID, sizeof(char) * 256, id, strlen(id));
 }
 
 //This function will delete this particular node
