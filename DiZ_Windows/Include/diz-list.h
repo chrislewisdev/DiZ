@@ -174,6 +174,7 @@ template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(DIZ_LISTITEM<TYPE> *target
 template <class TYPE> void DIZ_LIST<TYPE>::kill()
 {
 	deleteItem(root);
+	root = NULL;
 }
 
 //This function will add a new generic item to our list
