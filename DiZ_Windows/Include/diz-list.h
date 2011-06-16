@@ -43,6 +43,8 @@ private:
 	//Declare our private properties
 	//Declare our root DIZ_LISTITEM
 	DIZ_LISTITEM<TYPE> *root;
+	//Declare an item counter
+	int total;
 
 protected:
 	//Declare protected functions
@@ -54,6 +56,7 @@ protected:
 template <class TYPE> DIZ_LIST<TYPE>::DIZ_LIST() {
 	//Set all our values to safe defaults
 	root = NULL;
+	total = 0;
 }
 
 //Declare our Destructor
@@ -142,15 +145,7 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LIST<TYPE>::getItem(char id[])
 //This function will return the no. of elements in the list
 template <class TYPE> int DIZ_LIST<TYPE>::count()
 {
-	//Return an appropriate total value
-	if (root)
-	{
-		return root->total;
-	}
-	else
-	{
-		return 0;
-	}
+	return total;
 }
 
 //This function will delete a specified node (and all following nodes)
@@ -167,6 +162,7 @@ template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(DIZ_LISTITEM<TYPE> *target
 		
 		//Then call the item's kill function
 		target->kill();
+		total--;
 	}
 }
 
@@ -204,6 +200,7 @@ template <class TYPE> DIZ_LISTITEM<TYPE> *DIZ_LIST<TYPE>::addNewItem()
 
 	//Then create our new item and return it
 	*target = new DIZ_LISTITEM<TYPE>(cdtr, NULL);
+	total++;
 
 	return *target;
 }
