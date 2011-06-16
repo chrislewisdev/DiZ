@@ -44,27 +44,27 @@ bool DIZ_OGGSTREAM::loadFile(char fname[]) {
 //This function will add a new source target to our stream
 bool DIZ_OGGSTREAM::addTarget(ALuint source) {
 	//Declare a stream-target pointer to a new item in our list
-	DIZ_OGGSTREAMTARGET *newTarget = targets.addItem();
+	DIZ_LISTITEM<DIZ_OGGSTREAMTARGET> *newTarget = targets.addItem(targets.count());
 
 	//Check that the new item succeeded
 	if (newTarget != NULL) {
 		//Generate our new buffers in our stream-target
-		alGenBuffers(2, newTarget->buffers);
+		alGenBuffers(2, newTarget->item.buffers);
 		//Set our source target to the specified ID
-		newTarget->source = source;
+		newTarget->item.source = source;
 		//And set our stream-location to 0
-		newTarget->location = 0;
+		newTarget->item.location = 0;
 
 		//Now attempt to stream into both of our new buffers
-		if (!streamToBuffer(newTarget->buffers[0], &newTarget->location)) {
+		if (!streamToBuffer(newTarget->item.buffers[0], &newTarget->item.location)) {
 			return false;
 		}
-		if (!streamToBuffer(newTarget->buffers[1], &newTarget->location)) {
+		if (!streamToBuffer(newTarget->item.buffers[1], &newTarget->item.location)) {
 			return false;
 		}
 
 		//And finally queue up our buffers on our source ready to be played
-		alSourceQueueBuffers(newTarget->source, 2, newTarget->buffers);
+		alSourceQueueBuffers(newTarget->item.source, 2, newTarget->item.buffers);
 	}else {
 		return false;
 	}
@@ -80,7 +80,7 @@ bool DIZ_OGGSTREAM::addTarget(ALuint source) {
 //This function will update our streams
 bool DIZ_OGGSTREAM::update() {
 	//Declare a conductor variable set our first target item
-	DIZ_OGGSTREAMTARGET *cdtr = targets.iterate(true);
+	DIZ_LISTITEM<DIZ_OGGSTREAMTARGET> *cdtr = targets.rootItem();
 	//Declare a storage variable for no. of processed buffers in each source
 	int processedBuffers;
 	//Declare a buffer-ID storage variable
@@ -91,25 +91,25 @@ bool DIZ_OGGSTREAM::update() {
 	//Loop while we still have items to move through
 	while (cdtr) {
 		//First retrieve our no. of processed buffers in our current source
-		alGetSourcei(cdtr->source, AL_BUFFERS_PROCESSED, &processedBuffers);
+		alGetSourcei(cdtr->item.source, AL_BUFFERS_PROCESSED, &processedBuffers);
 
 		//Loop until we've replaced all the buffers
 		while (processedBuffers > 0) {
 			//Pop our finished buffers of the source queue
-			alSourceUnqueueBuffers(cdtr->source, 1, &buf);
+			alSourceUnqueueBuffers(cdtr->item.source, 1, &buf);
 			//Then fill it up with new data, with a quick error check
-			if (!streamToBuffer(buf, &cdtr->location)) {
+			if (!streamToBuffer(buf, &cdtr->item.location)) {
 				results = false;
 			}
 			//Then put it back on the end of the queue
-			alSourceQueueBuffers(cdtr->source, 1, &buf);
+			alSourceQueueBuffers(cdtr->item.source, 1, &buf);
 
 			//Then decrement our counter
 			processedBuffers--;
 		}
 
 		//Check that we have a next item to move onto, otherwise exit our loop
-		cdtr = targets.iterate(false);
+		cdtr = cdtr->nextItem();
 	}
 
 	//Finally, check for any OpenAL errors
@@ -124,7 +124,7 @@ bool DIZ_OGGSTREAM::update() {
 //This function will close our class' properties
 void DIZ_OGGSTREAM::kill() {
 	//Declare a conductor object set to our first item
-	DIZ_OGGSTREAMTARGET *cdtr = targets.iterate(true);
+	DIZ_LISTITEM<DIZ_OGGSTREAMTARGET> *cdtr = targets.rootItem();
 	//Declare a storage variable for our queued buffers
 	int queuedBuffers;
 	//Declare a storage variable for buffer-IDs
@@ -133,21 +133,21 @@ void DIZ_OGGSTREAM::kill() {
 	//Loop as long as we have items left
 	while (cdtr) {
 		//Stop our target source (just in case)
-		alSourceStop(cdtr->source);
+		alSourceStop(cdtr->item.source);
 		//Retrieve the amount of queued buffers on our source
-		alGetSourcei(cdtr->source, AL_BUFFERS_QUEUED, &queuedBuffers);
+		alGetSourcei(cdtr->item.source, AL_BUFFERS_QUEUED, &queuedBuffers);
 
 		//Loop for as many buffers as we need
 		while (queuedBuffers > 0) {
 			//Unqueue our left-over buffers on this source
-			alSourceUnqueueBuffers(cdtr->source, 1, &buf);
+			alSourceUnqueueBuffers(cdtr->item.source, 1, &buf);
 
 			//Then decrement our counter
 			queuedBuffers--;
 		}
 
 		//Check if we have any more items, otherwise exit our loop
-		cdtr = targets.iterate(false);
+		cdtr = cdtr->nextItem();
 	}
 
 	//Close our Ogg file
