@@ -35,7 +35,7 @@ public:
 	//This function will return the number of elements in our list
 	int count();
 	//This function will delete an item (and all its following nodes)
-	void deleteItem(DIZ_LISTITEM<TYPE> *target);
+	void deleteItem(DIZ_LISTITEM<TYPE> *target, bool clear);
 	//This function will clear out our entire list
 	void kill();
 
@@ -149,15 +149,15 @@ template <class TYPE> int DIZ_LIST<TYPE>::count()
 }
 
 //This function will delete a specified node (and all following nodes)
-template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(DIZ_LISTITEM<TYPE> *target)
+template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(DIZ_LISTITEM<TYPE> *target, bool clear)
 {
 	//Check we have a target
 	if (target)
 	{
 		//If we have any more nodes, delete them
-		if (target->nextItem())
+		if (target->nextItem() && clear)
 		{
-			deleteItem(target->nextItem());
+			deleteItem(target->nextItem(), true);
 		}
 		
 		//Then call the item's kill function
@@ -169,7 +169,7 @@ template <class TYPE> void DIZ_LIST<TYPE>::deleteItem(DIZ_LISTITEM<TYPE> *target
 //This function will kill our entire list
 template <class TYPE> void DIZ_LIST<TYPE>::kill()
 {
-	deleteItem(root);
+	deleteItem(root, true);
 	root = NULL;
 }
 
